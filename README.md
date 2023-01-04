@@ -1,38 +1,31 @@
-# [ℹ️ New version available for testing](https://github.com/Desuuuu/klipper/discussions/74)
+Welcome to the Klipper for CR6 Printers project!
 
-Welcome to the Klipper project!
+This repo is forked from [the master DGUS-RELOADED project repository](https://github.com/Desuuuu/Klipper) maintained by Desuuuu.
+The Desuuuu repo is in-turn forked from [the master Klipper3D.org github repository.](https://github.com/Klipper3d/klipper/)
 
-[![Klipper](docs/img/klipper-logo-small.png)](https://www.klipper3d.org/)
+The goal of this (Klipper for CR6 Printers) project is to establish and maintain a stable version of the DGUS-RELOADED version of Klipper which works with the DWIN_SET UI in [this companion repository](https://github.com/Thinkersbluff/DGUS-reloadedForKlipper_CR6). The DGUS-reloadedForKlipper_CR6 UI has been specifically customized to run in portrait mode on stock CR6 T5L 272x480 DWIN displays. It has also been programmed to integrate and interact with the modified version of Klipper in this repository, which defines and implements the controls and data displays programmed into the UI.
 
-https://www.klipper3d.org/
+## Who should __NOT__ use this firmware?
+If your goal is to run Klipper on your CR6 without using the stock T5L DWIN display hardware, **then you do not need this modified version of Klipper.**
+Just install the master Klipper3D.org version and configure it for your CR6 printer per the [Klipper3d.org installation and configuration documentation](https://github.com/Klipper3d/klipper/blob/master/docs/index.md).
 
-Klipper is a 3d-Printer firmware. It combines the power of a general
-purpose computer with one or more micro-controllers. See the
-[features document](https://www.klipper3d.org/Features.html) for more
-information on why you should use Klipper.
+This repository may be very helpful for you: https://github.com/KoenVanduffel/CR-6_Klipper
 
-To begin using Klipper start by
-[installing](https://www.klipper3d.org/Installation.html) it.
+## Why Not Just Use the Desuuuu/Klipper version?
+Some of the functionality implemented in the CR6-specific UI is not present or is organized differently, in the Desuuuu companion display app.
+To enable that functionality, it was necessary to edit a few of the Desuuuu/Klipper files.
 
-Klipper is Free Software. See the [license](COPYING) or read the
-[documentation](https://www.klipper3d.org/Overview.html). We depend on
-the generous support from our
-[sponsors](https://www.klipper3d.org/Sponsors.html).
+Unfortunately, when using Moonraker Update Manager to keep all of my system and application files up to date, I could not find a way to configure the Moonraker Update Manager to stop it reverting my modified files back to the Desuuuu versions, nor could I find a way to get it to automatically keep the modified Klipper installation up to date.  I was also not willing to wait and hope for Desuuuu to implement Pull Requests against his master version, to get this CR6 project rolling.  
 
-## Modifications
+The best option seemed to be to establish this CR6-specific master repository, from which Moonraker can keep DGUS-Reloaded for CR6 installations of Klipper up to date. 
 
-The scope of modifications is limited to adding support for DWIN T5UID1
-touchscreens (except for the addition of a `--warn` CLI option, which sets the
-logging level to WARNING).
 
-The touchscreen feature is only available for AVR/LPC176X/STM32/SAMD
-micro-controllers and it needs to be configured before compilation.
+## Additional Recommended Reading
+To learn more about Klipper3d.org and about the DGUS-RELOADED project, you are strongly encouraged to follow these links:
 
-The touchscreen firmware compatible with this fork is available in
-[this repository](https://github.com/Desuuuu/DGUS-reloaded-Klipper).
+### All about Klipper3D, in their own words
+[![Klipper](docs/img/klipper-logo-small.png)](https://www.klipper3d.org/)  https://www.klipper3d.org/
 
-Example configurations are available in
-[this repository](https://github.com/Desuuuu/DGUS-reloaded-Klipper-config).
+### The DGUS-RELOADED Klipper Project, by Desuuuu
 
-Available configuration options are documented in the
-[sample-t5uid1.cfg](/config/sample-t5uid1.cfg) file.
+ https://github.com/Desuuuu/Klipper
