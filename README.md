@@ -3,7 +3,9 @@
 This repo is forked from [the master DGUS-RELOADED project repository](https://github.com/Desuuuu/Klipper) maintained by Desuuuu.
 The Desuuuu repo is in-turn forked from [the master Klipper3D.org github repository.](https://github.com/Klipper3d/klipper/)
 
-The goal of this (Klipper for CR6 Printers) project is to establish and maintain a stable version of the DGUS-RELOADED version of Klipper which works with the DWIN_SET UI in [this companion repository](https://github.com/Thinkersbluff/DGUS-reloadedForKlipper_CR6). The DGUS-reloadedForKlipper_CR6 UI has been specifically customized to run in portrait mode on stock CR6 T5L 272x480 DWIN displays. It has also been programmed to integrate and interact with the modified version of Klipper in this repository, which defines and implements the controls and data displays programmed into the UI.
+The goal of this (Klipper for CR6 Printers) project is to establish and maintain a stable version of the DGUS-RELOADEDForCR6 version of Klipper which works with the DGUS-reloadedForKlipper_CR6 DWIN_SET UI in [this companion repository](https://github.com/Thinkersbluff/DGUS-reloadedForKlipper_CR6). 
+
+The DGUS-reloadedForKlipper_CR6 UI has been specifically customized to run in portrait mode on stock CR6 T5L 272x480 DWIN displays. It has also been programmed to integrate and interact with the modified version of Klipper in this repository, which defines and implements the controls and data displays programmed into the UI.
 
 ## Who should __NOT__ use this firmware?
 If your goal is to run Klipper on your CR6 without using the stock T5L DWIN display hardware, **then you do not need this modified version of Klipper.**
