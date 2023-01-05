@@ -1,4 +1,4 @@
-# Welcome to the Klipper for CR6 Printers project!
+# Welcome to the Klipper for CR6Community Printers project!
 
 This repo is forked from [the master DGUS-RELOADED project repository](https://github.com/Desuuuu/Klipper) maintained by Desuuuu.
 The Desuuuu repo is in-turn forked from [the master Klipper3D.org github repository.](https://github.com/Klipper3d/klipper/)
