@@ -1,6 +1,7 @@
 # Package definition for the extras/t5uid1/dugs_reloaded directory
 #
 # Copyright (C) 2020  Desuuuu <contact@desuuuu.com>
+# Thermal Settings modified by Thinkersbluff 2023
 #
 # This file may be distributed under the terms of the GNU GPLv3 license.
 controls = {
@@ -26,7 +27,7 @@ constants = {
     },
     'temp_abs': {
         'hotend': 240,
-        'bed': 90
+        'bed': 95
     },
     'temp_petg': {
         'hotend': 225,
