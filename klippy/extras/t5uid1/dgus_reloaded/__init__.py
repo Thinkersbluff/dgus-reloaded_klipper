@@ -9,7 +9,7 @@ controls = {
     'resume':   2, # popup_window
 
     # leveling_automatic
-    'disable':  5, # return_key_code
+    'disable':  5, # return_key_code   ; this function is not required
 
     # settings_menu2
     'extra2':   4, # return_key_code
@@ -21,16 +21,16 @@ controls = {
 
 constants = {
     'temp_pla': {
-        'hotend': 200,
+        'hotend': 210,
         'bed': 60
     },
     'temp_abs': {
         'hotend': 240,
-        'bed': 80
+        'bed': 90
     },
     'temp_petg': {
-        'hotend': 240,
-        'bed': 60
+        'hotend': 225,
+        'bed': 80
     },
 
     'popup_confirmed':  1,
