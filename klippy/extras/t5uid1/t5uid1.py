@@ -792,10 +792,10 @@ class T5UID1:
     def limit_extrude(self, extruder, val):
         try:
             if extruder in self.extruders:
-                res = self.extruders[extruder].max_e_dist
+                res = self.extruders[extruder].max_extrude_only_distance
             else:
                 e = self.printer.lookup_object(extruder)
-                res = e.max_e_dist
+                res = e.max_extrude_only_distance
                 self.extruders[extruder] = e
             return min(res, val)
         except Exception:
