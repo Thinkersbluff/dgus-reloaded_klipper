@@ -1,11 +1,10 @@
-# Welcome to the Klipper for CR6Community Printers project!
+# DGUS-reloaded-Klipper (modified), CR6Community Edition!
+The Klipper in this repo is a fork of Klipper3D Release 0.10.0, which has been modified - [largely by Desuuuu](https://github.com/Desuuuu/klipper), and a little bit more by me - to work with the DGUS-reloaded DWIN_SET for CR6 printers located in [this companion repo.](https://github.com/Thinkersbluff/DGUS-reloadedForKlipper_CR6)
 
 This repo is forked from [the master DGUS-RELOADED project repository](https://github.com/Desuuuu/Klipper) maintained by Desuuuu.
 The Desuuuu repo is in-turn forked from [the master Klipper3D.org github repository.](https://github.com/Klipper3d/klipper/)
 
-The goal of this (Klipper for CR6 Printers) project is to establish and maintain a stable version of the DGUS-RELOADEDForCR6 version of Klipper which works with the DGUS-reloadedForKlipper_CR6 DWIN_SET UI in [this companion repository](https://github.com/Thinkersbluff/DGUS-reloadedForKlipper_CR6). 
-
-The DGUS-reloadedForKlipper_CR6 UI has been specifically customized to run in portrait mode on stock CR6 T5L 272x480 DWIN displays. It has also been programmed to integrate and interact with the modified version of Klipper in this repository, which defines and implements the controls and data displays programmed into the UI.
+>>**NOTE:** Desuuuu has also indicated that he intends to stop maintaining his dgus-reloaded-klipper fork, soon, so I am looking for CR6Community help to take over keeping this fork up to date with future releases of Klipper. (See **How to Contribute**, below)
 
 ## Who should __NOT__ use this firmware?
 If your goal is to run Klipper on your CR6 without using the stock T5L DWIN display hardware, **then you do not need this modified version of Klipper.**
@@ -15,18 +14,27 @@ This repository may be very helpful for you: https://github.com/KoenVanduffel/CR
 
 ## Why Not Just Use the Desuuuu/Klipper version?
 Some of the functionality implemented in the CR6-specific UI is not present or is organized differently, in the Desuuuu companion display app.
-To enable that functionality, it is necessary to edit a few of the Desuuuu/Klipper files, for which I needed to make my own (this) fork.
+To enable the CR6 UI functionality, it is necessary to edit a few of the Desuuuu/Klipper files, for which I needed to make my own (this) fork.
 
 ## Is This Klipper Fork Using the latest Klipper3D/master version?
 No.  
 As of Jan 2023: 
 - the latest release of Klipper is 0.11.0, available 28 Nov 2022.
+- Klipper3D are also signalling there may be a new Klipper release in Feb 2023
 - the Desuuuu fork was last updated with Klipper 0.10.0, available 29 Sept 2022.
 - this CR6Community Edition is a fork of the Desuuuu fork.
 
 Worst-case, this solution may always be limited to exploiting [the features and capabilities of Klipper at release 0.10.0](https://github.com/Thinkersbluff/dgus-reloaded_klipper/blob/DGUS-ReloadedForCR6/docs/Releases.md).
 
-Because of the customizations in some of the klipper/src/ files, updating this fork is not as simple as using GitHub to merge this repo with the Klipper3D master branch.  If and when Desuuuu updates his fork, I will certainly update this one, but I have neither the expertise nor the time to decipher the conflicts introduced by recent upstream mods to the stm32 serial interface modules. (If there are CR6Community members who are both capable and willing to take on that challenge, please let me know in the Discussions section.  I am certainly open to reviewing PRs.)
+Because of the customizations in some of the klipper/src/ files, updating this fork is not as simple as using GitHub to merge this repo with the Klipper3D master branch.  If and when Desuuuu updates his fork, I will certainly update this one, but I have neither the expertise nor the time to decipher the conflicts introduced by recent upstream mods to the stm32 serial interface modules. 
+ 
+ ## How to Contribute
+
+CR6Community Firmware features NOT present in this release may be developed in future releases, but no schedule commitment is possible for such extensions.  Users who are able to define and develop such modifications are welcome to fork this repository and to submit Pull Requests or to open Discussions or Issues as appropriate, to propose those changes.
+
+ One "future-proofing" option that comes to mind, for instance, is to pre-compile the Klipper.bin files and package the actual UI interface component (klippy/extras/t5uid1) as a py wheel to be installed into the Klipper3D/master version of Klipper with pip. 
+
+> **If there are CR6Community members who are both capable and willing to take on the challenge of helping to future-proof this fork, please let me know in the Discussions section.  I am certainly open to reviewing PRs.**
 
 ## Is There Another Way to Re-Activate My Stock CR6 Display on Klipper, Without Getting Locked-in to Klipper 0.10.10?
 
@@ -35,12 +43,17 @@ If being "locked-in" to Klipper v0.10.0 is not ok for you, but you still want a 
 ## Recommended References
 To learn more about Klipper3d.org and about the DGUS-RELOADED project, you are strongly encouraged to follow these links:
 
-### All about Klipper3D, in their own words
+### All about Klipper3D, in their own words  
 [![Klipper](docs/img/klipper-logo-small.png)](https://www.klipper3d.org/)  https://www.klipper3d.org/
 
-### The DGUS-RELOADED Klipper Project, by Desuuuu
+### The DGUS-RELOADED Klipper Project, by Desuuuu  
  https://github.com/Desuuuu/Klipper
  
+#### Additional useful info is available in the Desuuuu/DGUS-reloaded-Klipper-config Wiki
+* [Flashing the firmware](https://github.com/Desuuuu/DGUS-reloaded-Klipper/wiki/Flashing-the-firmware)
+* [Print status](https://github.com/Desuuuu/DGUS-reloaded-Klipper/wiki/Print-status)
+* [Print progress display](https://github.com/Desuuuu/DGUS-reloaded-Klipper/wiki/Print-progress-display)
+
  ### The Klipper-DGUS project, by SEHO85 (BUZZ-T on the CR6Community Discord)
  This project is the "alternative approach" to which I refer, above.
   - His GitHub project is here: https://github.com/seho85/klipper-dgus
