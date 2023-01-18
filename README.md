@@ -8,13 +8,43 @@ The Desuuuu repo is in-turn forked from [the master Klipper3D.org github reposit
 
 ## Who should __NOT__ use this firmware?
 If your goal is to run Klipper on your CR6 without using the stock T5L DWIN display hardware, **then you do not need this modified version of Klipper.**
-Just install the master Klipper3D.org version and configure it for your CR6 printer per the [Klipper3d.org installation and configuration documentation](https://github.com/Klipper3d/klipper/blob/master/docs/index.md).
+Just install the master Klipper3D.org version and configure it for your CR6 printer per the [Klipper3d.org installation and configuration documentation](https://github.com/Klipper3d/klipper/blob/master/docs/index.md).  
 
 This repository may be very helpful for you: https://github.com/KoenVanduffel/CR-6_Klipper
 
 ## Why Not Just Use the Desuuuu/Klipper version?
 Some of the functionality implemented in the CR6-specific UI is not present or is organized differently, in the Desuuuu companion display app.
 To enable the CR6 UI functionality, it is necessary to edit a few of the Desuuuu/Klipper files, for which I needed to make my own (this) fork.
+
+## How to Install This (Modified) Klipper Instead of the Version at Klipper3D/master
+
+### Recommended Tools:
+1. ![image](https://user-images.githubusercontent.com/36551518/213053033-619e638b-a6b7-4ff9-b5ab-ee34035fb11f.png)
+Klipper Installation And Update Helper (KIAUH) 
+
+### 'Step-by-Step*' Instructions (*Some steps may be bigger than others...):
+1. Install KIAUH on your Klipper host.
+   (I recommend you use [KIAUH](https://github.com/th33xitus/kiauh) to manage this installation, so that is the ONLY way I will describe here, to keep this as simple as possible.)
+2. In the folder "Related Changes", I have provided a file called, "klipper_repos.txt".  Copy that file into the kiauh folder on your Klipper Host before you launch KIAUH.  That file will allow you to point KIAUH to this eepository to download Klipper.
+3. Launch KIAUH
+4. Enter '4' to navigate to Advance Settings
+5. Enter '0' to select this repo as the source for Klipper
+6. KIAUH will ask you to confirm that it should now remove any existing Klipper installation and install this one.  Enter "Y" for "Yeah, man, let's do this"
+7. When KIAUH is finished, enter 'B' to go Back to the main menu and 'Q' to Quit KIAUH.
+
+This modfied version of Klipper will now be installed on your Klipper Host.
+
+8. While you are still logged into your Klipper host, let's install STABLE_Z_HOME.py.
+9. Navigate to the Klippy/extras folder on the host ($ cd ~/klipper/klippy/extras)
+10. Enter this command: $ ln -s ~/Klipper-Stable-Z-Home/stable_z_home.py
+11. Verify that you now see stable_z_home.py in the klippy/extras folder on your host.  
+
+12. Also provided in the Related Changes folder is a copy of the Klipper.bin file for the BTT SKR CR6 and Creality ERA 1.1.0.3 or 4.5.3 board. If you have either of those motherboards, copy the appropriate bin file onto an SD card and flash that to your motherboard.
+>> If you have a 4.5.2 board, we have not yet captured a Klipper.bin file for you.  Please use _make menuconfig_ to create a Klipper.bin file for the 4.5.2 board and flash that to your motherboard. (When you have confirmed that it works, please upload a copy in a Discussion on this repo, along with a screenshot of the Make Menuconfig screen that worked for configuring it, so that we can share those files in future.)  
+
+13. Now review the Klipper configuration files in the Related Changes folder corresponding to your motherboard (again, apologies to 4.5.2 users; we don't have that info for you, yet...)
+    Update your existing Klipper config files as appropriate, to configure your system to work with this version of Klipper and your preferred workflow.
+>> Sorry - way too many possible combiations and permutations for me to walk you through this part.  Hoping you can figure it out on your own.  Post questions if you have specific problems you can not work out. Hopefully someone else has a good answer for you.    
 
 ## Is This Klipper Fork Using the latest Klipper3D/master version?
 No.  
