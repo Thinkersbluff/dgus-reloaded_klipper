@@ -19,8 +19,13 @@ To enable the CR6 UI functionality, it is necessary to edit a few of the Desuuuu
 ## How to Install This (Modified) Klipper Instead of the Version at Klipper3D/master
 
 ### Recommended Tools:
-1. ![image](https://user-images.githubusercontent.com/36551518/213053033-619e638b-a6b7-4ff9-b5ab-ee34035fb11f.png)
-Klipper Installation And Update Helper (KIAUH) 
+1. An SSH Client (e.g. PUTtY, for Windows)  
+![Untitled-2](https://user-images.githubusercontent.com/36551518/213055863-567e1659-3c46-4944-a5a6-8dd691d03288.png)
+2. An SFTP Client (e.g.FileZilla)  
+![Untitled-2](https://user-images.githubusercontent.com/36551518/213055590-0c6425ec-da98-4c16-a27d-fe6c14263406.png)
+3. Klipper Installation And Update Helper (KIAUH)   
+![Untitled-1](https://user-images.githubusercontent.com/36551518/213055141-1b9cad6e-f19e-4cfd-a6a0-a1bf9ef87895.png)
+
 
 ### 'Step-by-Step*' Instructions (*Some steps may be bigger than others...):
 1. Install KIAUH on your Klipper host.
