@@ -848,7 +848,7 @@ class T5UID1:
         }
 
     def set_message(self, message):
-        self.set_variable('message', message)
+        self.set_variable('message', message.strip())
         if 'message' in self._vars:
             self.send_var('message')
         if len(message) > 0 and 'message_timeout' in self._routines:
