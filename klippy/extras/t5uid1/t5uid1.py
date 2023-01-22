@@ -548,6 +548,8 @@ class T5UID1:
     def check_paused(self):
         if not self._is_printing:
             return
+        if not self.pause_resume.is_paused:
+            return
         curtime = self.reactor.monotonic()
         if self._print_pause_time < 0 and self.pause_resume.is_paused:
             self._print_pause_time = curtime
