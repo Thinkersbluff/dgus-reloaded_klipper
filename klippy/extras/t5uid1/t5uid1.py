@@ -5,6 +5,7 @@
 # This file may be distributed under the terms of the GNU GPLv3 license.
 import os, logging, struct, textwrap
 import jinja2
+import math
 import mcu
 from . import var, page, routine, dgus_reloaded
 from .. import gcode_macro, heaters
@@ -47,25 +48,25 @@ def map_value_range(x, in_min, in_max, out_min, out_max):
                      / (in_max - in_min)
                      + out_min))
 
-def get_duration(seconds):
-    if type(seconds) is not int:
-        seconds = int(seconds)
-    if seconds < 0:
-        seconds = 0
-    minutes = seconds / 60
-    hours = minutes / 60
-    days = hours / 24
-    days %= 365
-    hours %= 24
-    minutes %= 60
-    seconds %= 60
-    result = str(seconds) + "s"
-    if minutes:
-        result = str(minutes) + "m " + result
-    if hours:
-        result = str(hours) + "h " + result
-    if days:
-        result = str(days) + "d " + result
+def get_duration(secs):
+    if type(secs) is not int:
+       secs = int(secs)
+    if secs < 0:
+       secs = 0
+    mins = secs // 60
+    hrs = mins // 60
+    dys = hrs // 24
+    dys %= 365
+    hrs %= 24
+    mins %= 60
+    secs %= 60
+    result = "%ss" % (secs,)
+    if mins:
+       result = "%sm" % (mins,) + " " + result
+    if hrs:
+       result = "%sh" % (hrs,) + " " + result
+    if dys:
+       result = "%sd" % (dys,) + " " + result
     return result
 
 def bitwise_and(lhs, rhs):
