@@ -10,7 +10,7 @@ Known Issues at this release: (As observed on the Test Printer)
 
 1. CANCEL_PRINT leaves Mainsail/Klipper printer status as Cancelled instead of Completed.  Klipper acts as though the printer is still printing & continues to show print time remaining.  Can not start another print or move axes.  Forced to do Emergency Stop, to regain control of printer.
 
-2. PAUSE and CANCEL_PRINT sometimes cause spurious behaviours, like "move out of range".  Still troubleshooting why.  Is not consistent but seems best to let the head finish homing before trying to CANCEL_PRINT, for instance.
+2. PAUSE and CANCEL_PRINT sometimes cause spurious behaviours, like "move out of range".  Is not consistent but seems best to let the head finish homing and PAUSE a print before trying to Stop (CANCEL_PRINT), for instance.
 
 
 
