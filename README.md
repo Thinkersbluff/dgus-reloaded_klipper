@@ -1,10 +1,10 @@
 # DGUS-reloaded-Klipper (modified), CR6Community Edition!
 The Klipper in this repo is a fork of Klipper3D Release 0.10.0, which has been modified - [largely by Desuuuu](https://github.com/Desuuuu/klipper), and a little bit more by me - to work with the DGUS-reloaded DWIN_SET for CR6 printers located in [this companion repo.](https://github.com/Thinkersbluff/DGUS-reloadedForKlipper_CR6)
 
-This repo is forked from [the master DGUS-RELOADED project repository](https://github.com/Desuuuu/Klipper) maintained by Desuuuu.
+This repo was forked from [the master DGUS-RELOADED project repository](https://github.com/Desuuuu/Klipper) maintained by Desuuuu.
 The Desuuuu repo is in-turn forked from [the master Klipper3D.org github repository.](https://github.com/Klipper3d/klipper/)
 
->>**NOTE:** Desuuuu has also indicated that he intends to stop maintaining his dgus-reloaded-klipper fork, soon, so I am looking for CR6Community help to take over keeping this fork up to date with future releases of Klipper. (See **How to Contribute**, below)
+>>**NOTE:** Desuuuu has also indicated that he intends to stop maintaining his dgus-reloaded-klipper fork, soon, so I am looking for CR6Community help to take over extending and maintaining this fork. (See **How to Contribute**, below)
 
 ## Who should __NOT__ use this firmware?
 If your goal is to run Klipper on your CR6 without using the stock T5L DWIN display hardware, **then you do not need this modified version of Klipper.**
@@ -17,16 +17,15 @@ Some of the functionality implemented in the CR6-specific UI is not present or i
 To enable the CR6 UI functionality, it is necessary to edit a few of the Desuuuu/Klipper files, for which I needed to make my own (this) fork.
 
 ## Is This Klipper Fork Using the latest Klipper3D/master version?
-No.  
+Sort of...
 As of Jan 2023: 
 - the latest release of Klipper is 0.11.0, available 28 Nov 2022.
 - Klipper3D are also signalling there may be a new Klipper release in Feb 2023
 - the Desuuuu fork was last updated with Klipper 0.10.0, available 29 Sept 2022.
-- this CR6Community Edition is a fork of the Desuuuu fork.
+- On 25 an 2023, Thinkersbluff was able to update the Klipper in this fork to 0.11.0, by merging this repo with [another fork of Klipper3D/Master maintained by gbkwiatt](https://github.com/gbkwiatt/klipper)
+- For as long as Thinkersbluff is able to continue merging this fork with the latest Klipper3D/Master version, he will do so.
 
-Worst-case, this solution may always be limited to exploiting [the features and capabilities of Klipper at release 0.10.0](https://github.com/Thinkersbluff/dgus-reloaded_klipper/blob/DGUS-ReloadedForCR6/docs/Releases.md).
-
-Because of the customizations in some of the klipper/src/ files, updating this fork is not as simple as using GitHub to merge this repo with the Klipper3D master branch.  If and when Desuuuu updates his fork, I will certainly update this one, but I have neither the expertise nor the time to decipher the conflicts introduced by recent upstream mods to the stm32 serial interface modules. 
+Worst-case, however, this solution may someday be limited to exploiting [the features and capabilities of Klipper at the last release with which we were able to merge without conflict](https://github.com/Thinkersbluff/dgus-reloaded_klipper/blob/DGUS-ReloadedForCR6/docs/Releases.md). 
  
  ## How to Contribute
 
@@ -38,7 +37,7 @@ CR6Community Firmware features NOT present in this release may be developed in f
 
 ## Is There Another Way to Re-Activate My Stock CR6 Display on Klipper, Without Getting Locked-in to Klipper 0.10.10?
 
-If being "locked-in" to Klipper v0.10.0 is not ok for you, but you still want a way to reuse your stock CR6 DWIN display, you may prefer trying [this alternative approach](https://github.com/Thinkersbluff/Klipper-dgus_CR6), which uses a separate serial interface to the display and the Moonraker API.  I only have the bandwidth to focus on this project or that one, but it is in my mind to try to develop a single DWIN_SET app that is compatible with either serial interface solution, if such a thing is possible.    
+If figuring out how to install and configure your system to work with this firmware is too difficult for you, but you still want a way to reuse your stock CR6 DWIN display, you may prefer trying [this alternative approach](https://github.com/Thinkersbluff/Klipper-dgus_CR6), which uses a separate serial interface to the display and the Moonraker API.  I only have the bandwidth to focus on this project or that one, but it is in my mind to try to develop a single DWIN_SET app that is compatible with either serial interface solution, if such a thing is possible.    
 
 ## Recommended References
 To learn more about Klipper3d.org and about the DGUS-RELOADED project, you are strongly encouraged to follow these links:
