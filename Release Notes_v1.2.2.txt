@@ -1,0 +1,19 @@
+New at release 1.2.2
+
+
+Corrected syntax errors in definition in t5uid1.get_duration.  Elapsed print time display is now enabled, for DWIN_SET at v0.3.3 and subs.
+
+
+
+
+Known Issues at this release: (As observed on the Test Printer)
+
+1. CANCEL_PRINT leaves Mainsail/Klipper printer status as Cancelled instead of Completed.  Klipper acts as though the printer is still printing & continues to show print time remaining.  Can not start another print or move axes.  Forced to do Emergency Stop, to regain control of printer.
+
+2. PAUSE and CANCEL_PRINT sometimes cause spurious behaviours, like "move out of range".  Still troubleshooting why.  Is not consistent but seems best to let the head finish homing before trying to CANCEL_PRINT, for instance.
+
+
+
+NOTE: I could use a bit of help to analyse and modify the Python bits of the Klipper side.  Please join me in the Discussions section, if you think you can help.  
+
+Cheers!
