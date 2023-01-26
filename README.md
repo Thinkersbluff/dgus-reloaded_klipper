@@ -1,5 +1,5 @@
 # DGUS-reloaded-Klipper (modified), CR6Community Edition!
-The Klipper in this repo is a fork of Klipper3D Release 0.10.0, which has been modified - [largely by Desuuuu](https://github.com/Desuuuu/klipper), and a little bit more by me - to work with the DGUS-reloaded DWIN_SET for CR6 printers located in [this companion repo.](https://github.com/Thinkersbluff/DGUS-reloadedForKlipper_CR6)
+The Klipper in this repo is a fork of Klipper3D, which has been modified - [largely by Desuuuu](https://github.com/Desuuuu/klipper), and a little bit more by me - to work with the DGUS-reloaded DWIN_SET for CR6 printers located in [this companion repo.](https://github.com/Thinkersbluff/DGUS-reloadedForKlipper_CR6)
 
 This repo is forked from [the master DGUS-RELOADED project repository](https://github.com/Desuuuu/Klipper) maintained by Desuuuu.
 The Desuuuu repo is in-turn forked from [the master Klipper3D.org github repository.](https://github.com/Klipper3d/klipper/)
