@@ -37,7 +37,7 @@ CR6Community Firmware features NOT present in this release may be developed in f
 
 ## Is There Another Way to Re-Activate My Stock CR6 Display on Klipper?
 
-If figuring out how to install and configure your system to work with this firmware is too difficult for you, but you still want a way to reuse your stock CR6 DWIN display, you may prefer trying [this alternative approach](https://github.com/Thinkersbluff/Klipper-dgus_CR6), which uses a separate serial interface to the display and the Moonraker API.  I only have the bandwidth to focus on this project or that one, but it is in my mind to try to develop a single DWIN_SET app that is compatible with either serial interface solution, if such a thing is possible.    
+If figuring out how to install and configure your system to work with this firmware is too difficult for you, but you still want a way to reuse your stock CR6 DWIN display, you may prefer trying [this alternative approach](https://github.com/Thinkersbluff/Klipper-dgus_CR6), which uses a separate serial interface to the display and the Moonraker API.  I only have the bandwidth to focus on this project or that one, but it is in my mind to try to someday develop a single DWIN_SET app that is compatible with either serial interface solution, if such a thing is desireable and possible.    
 
 ## Recommended References
 To learn more about Klipper3d.org and about the DGUS-RELOADED project, you are strongly encouraged to follow these links:
