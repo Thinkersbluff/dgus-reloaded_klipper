@@ -20,8 +20,8 @@ SOURCE_FILES = [
     'pyhelper.c', 'serialqueue.c', 'stepcompress.c', 'itersolve.c', 'trapq.c',
     'pollreactor.c', 'msgblock.c', 'trdispatch.c',
     'kin_cartesian.c', 'kin_corexy.c', 'kin_corexz.c', 'kin_delta.c',
-    'kin_polar.c', 'kin_rotary_delta.c', 'kin_winch.c', 'kin_extruder.c',
-    'kin_shaper.c',
+    'kin_deltesian.c', 'kin_polar.c', 'kin_rotary_delta.c', 'kin_winch.c',
+    'kin_extruder.c', 'kin_shaper.c',
 ]
 DEST_LIB = "c_helper.so"
 OTHER_FILES = [
@@ -85,13 +85,13 @@ defs_trapq = """
         double x_r, y_r, z_r;
     };
 
+    struct trapq *trapq_alloc(void);
+    void trapq_free(struct trapq *tq);
     void trapq_append(struct trapq *tq, double print_time
         , double accel_t, double cruise_t, double decel_t
         , double start_pos_x, double start_pos_y, double start_pos_z
         , double axes_r_x, double axes_r_y, double axes_r_z
         , double start_v, double cruise_v, double accel);
-    struct trapq *trapq_alloc(void);
-    void trapq_free(struct trapq *tq);
     void trapq_finalize_moves(struct trapq *tq, double print_time);
     void trapq_set_position(struct trapq *tq, double print_time
         , double pos_x, double pos_y, double pos_z);
@@ -115,6 +115,11 @@ defs_kin_corexz = """
 defs_kin_delta = """
     struct stepper_kinematics *delta_stepper_alloc(double arm2
         , double tower_x, double tower_y);
+"""
+
+defs_kin_deltesian = """
+    struct stepper_kinematics *deltesian_stepper_alloc(double arm2
+        , double arm_x);
 """
 
 defs_kin_polar = """
@@ -205,8 +210,8 @@ defs_all = [
     defs_pyhelper, defs_serialqueue, defs_std, defs_stepcompress,
     defs_itersolve, defs_trapq, defs_trdispatch,
     defs_kin_cartesian, defs_kin_corexy, defs_kin_corexz, defs_kin_delta,
-    defs_kin_polar, defs_kin_rotary_delta, defs_kin_winch, defs_kin_extruder,
-    defs_kin_shaper,
+    defs_kin_deltesian, defs_kin_polar, defs_kin_rotary_delta, defs_kin_winch,
+    defs_kin_extruder, defs_kin_shaper,
 ]
 
 # Update filenames to an absolute path

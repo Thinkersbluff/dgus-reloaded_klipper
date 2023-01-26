@@ -501,10 +501,35 @@ class TMCVirtualPinHelper:
 # Config reading helpers
 ######################################################################
 
+# Helper to initialize the wave table from config or defaults
+def TMCWaveTableHelper(config, mcu_tmc):
+    set_config_field = mcu_tmc.get_fields().set_config_field
+    set_config_field(config, "mslut0", 0xAAAAB554)
+    set_config_field(config, "mslut1", 0x4A9554AA)
+    set_config_field(config, "mslut2", 0x24492929)
+    set_config_field(config, "mslut3", 0x10104222)
+    set_config_field(config, "mslut4", 0xFBFFFFFF)
+    set_config_field(config, "mslut5", 0xB5BB777D)
+    set_config_field(config, "mslut6", 0x49295556)
+    set_config_field(config, "mslut7", 0x00404222)
+    set_config_field(config, "w0", 2)
+    set_config_field(config, "w1", 1)
+    set_config_field(config, "w2", 1)
+    set_config_field(config, "w3", 1)
+    set_config_field(config, "x1", 128)
+    set_config_field(config, "x2", 255)
+    set_config_field(config, "x3", 255)
+    set_config_field(config, "start_sin", 0)
+    set_config_field(config, "start_sin90", 247)
+
 # Helper to configure and query the microstep settings
 def TMCMicrostepHelper(config, mcu_tmc):
     fields = mcu_tmc.get_fields()
     stepper_name = " ".join(config.get_name().split()[1:])
+    if not config.has_section(stepper_name):
+        raise config.error(
+            "Could not find config section '[%s]' required by tmc driver"
+            % (stepper_name,))
     stepper_config = ms_config = config.getsection(stepper_name)
     if (stepper_config.get('microsteps', None, note_valid=False) is None
         and config.get('microsteps', None, note_valid=False) is not None):
