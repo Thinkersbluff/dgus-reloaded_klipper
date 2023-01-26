@@ -1,10 +1,7 @@
-New at release 1.2.2
+New at release 1.2.3
 
-
-Corrected syntax errors in definition in t5uid1.get_duration.  Elapsed print time display is now enabled, for DWIN_SET at v0.3.3 and subs.
-
-
-
+Corrected the addresses for the t5uid1 variables file_name and message, so that the scrolling text widgets work correctly.
+See DWIN_SET Issue#13.
 
 Known Issues at this release: (As observed on the Test Printer)
 
