@@ -22,7 +22,7 @@ As of Jan 2023:
 - the latest release of Klipper is 0.11.0, available 28 Nov 2022.
 - Klipper3D are also signalling there may be a new Klipper release in Feb 2023
 - the Desuuuu fork was last updated with Klipper 0.10.0, available 29 Sept 2022.
-- On 25 an 2023, Thinkersbluff was able to update the Klipper in this fork to 0.11.0, by merging this repo with [another fork of Klipper3D/Master maintained by gbkwiatt](https://github.com/gbkwiatt/klipper)
+- On 25 Jan 2023, Thinkersbluff was able to update the Klipper in this fork to 0.11.0, by merging this repo with [another fork of Klipper3D/Master maintained by gbkwiatt](https://github.com/gbkwiatt/klipper)
 - For as long as Thinkersbluff is able to continue merging this fork with the latest Klipper3D/Master version, he will do so.
 
 Worst-case, however, this solution may someday be limited to exploiting [the features and capabilities of Klipper at the last release with which we were able to merge without conflict](https://github.com/Thinkersbluff/dgus-reloaded_klipper/blob/DGUS-ReloadedForCR6/docs/Releases.md). 
