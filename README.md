@@ -1,16 +1,16 @@
 # DGUS-reloaded-Klipper (modified), CR6Community Edition!
-The Klipper in this repo is a fork of Klipper3D Release 0.10.0, which has been modified - [largely by Desuuuu](https://github.com/Desuuuu/klipper), and a little bit more by me - to work with the DGUS-reloaded DWIN_SET for CR6 printers located in [this companion repo.](https://github.com/Thinkersbluff/DGUS-reloadedForKlipper_CR6)
+The Klipper in this repo is a fork of Klipper3D/Master, which has been modified - [largely by Desuuuu](https://github.com/Desuuuu/klipper), and a little bit more by me - to work with the DGUS-reloaded DWIN_SET for CR6 printers located in [this companion repo.](https://github.com/Thinkersbluff/DGUS-reloadedForKlipper_CR6)
 
-This repo was forked from [the master DGUS-RELOADED project repository](https://github.com/Desuuuu/Klipper) maintained by Desuuuu.
+This repo was forked from [the master DGUS-RELOADED project repository](https://github.com/Desuuuu/Klipper).
 The Desuuuu repo is in-turn forked from [the master Klipper3D.org github repository.](https://github.com/Klipper3d/klipper/)
 
->>**NOTE:** Desuuuu has also indicated that he intends to stop maintaining his dgus-reloaded-klipper fork, soon, so I am looking for CR6Community help to take over extending and maintaining this fork. (See **How to Contribute**, below)
+>>**NOTE:** Desuuuu has also indicated that he intends to stop maintaining his dgus-reloaded-klipper fork, soon, so I am looking for CR6Community help to maintain and extend this fork. (See **How to Contribute**, below)
 
 ## Who should __NOT__ use this firmware?
 If your goal is to run Klipper on your CR6 without using the stock T5L DWIN display hardware, **then you do not need this modified version of Klipper.**
 Just install the master Klipper3D.org version and configure it for your CR6 printer per the [Klipper3d.org installation and configuration documentation](https://github.com/Klipper3d/klipper/blob/master/docs/index.md).
 
-This repository may be very helpful for you: https://github.com/KoenVanduffel/CR-6_Klipper
+This repository may also be very helpful to get you started with Klipper on the CR6: https://github.com/KoenVanduffel/CR-6_Klipper
 
 ## Why Not Just Use the Desuuuu/Klipper version?
 Some of the functionality implemented in the CR6-specific UI is not present or is organized differently, in the Desuuuu companion display app.
@@ -26,6 +26,12 @@ As of Jan 2023:
 - For as long as Thinkersbluff is able to continue merging this fork with the latest Klipper3D/Master version, he will do so.
 
 Worst-case, however, this solution may someday be limited to exploiting [the features and capabilities of Klipper at the last release with which we were able to merge without conflict](https://github.com/Thinkersbluff/dgus-reloaded_klipper/blob/DGUS-ReloadedForCR6/docs/Releases.md). 
+
+## A Word Of Warning About Klipper Documentation
+Please note that Klipper3D are very good about keeping [their online documentation](https://www.klipper3d.org/) up to date with their latest firmware.
+This repo, however, is NOT up-to-the-minute with every change they release.  That latency can mean that some of their online instructions do not work with this version of Klipper.  The documentation in this repo is, however, "frozen" at the most recent version of Klipper with which we have merged.  
+
+I recommend that you ALWAYS use [this local copy of their documentation](https://github.com/Thinkersbluff/DGUS-Reloaded_for_CR6-Klipper_Component/blob/DGUS-ReloadedForCR6/docs/Overview.md), when seeking guidance on how this particular version is used.
  
  ## How to Contribute
 
