@@ -797,10 +797,10 @@ class T5UID1:
         logging.exception("Entering t5uid1.limit_extrude with val = : %s", str(val))
         try:
             if extruder in self.extruders:
-                res = self.extruders[extruder].max_extrude_only_distance
+                res = self.extruders[extruder].max_e_dist
             else:
                 ex = self.printer.lookup_object('extruder')
-                res = ex.max_extrude_only_distance
+                res = ex.max_e_dist
                 self.extruders[extruder] = ex
             # If entered value (val) > max_extrude_only_distance (res), then limit filament_length entry to the value of res
             return min(res, val)
