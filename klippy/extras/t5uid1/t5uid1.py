@@ -789,20 +789,26 @@ class T5UID1:
         try:
             return getattr(self.heaters.lookup_heater(heater).control,
                            'K' + param) * heaters.PID_PARAM_BASE
-        except Exception:
+        except Exception as e:
+            logging.exception("Unhandled exception in t5uid1.pid_param: %s", str(e))
             return 0
 
-    def limit_extrude(self, extruder, val):
+    def limit_extrude(self, extruder, val):  # make sure the filament_length value does not exceed the max_extrude_only_distance in printer.cfg
+        logging.exception("Entering t5uid1.limit_extrude with val = : %s", str(val))
         try:
             if extruder in self.extruders:
                 res = self.extruders[extruder].max_extrude_only_distance
             else:
-                e = self.printer.lookup_object(extruder)
-                res = e.max_extrude_only_distance
-                self.extruders[extruder] = e
+                ex = self.printer.lookup_object('extruder')
+                res = ex.max_extrude_only_distance
+                self.extruders[extruder] = ex
+            # If entered value (val) > max_extrude_only_distance (res), then limit filament_length entry to the value of res
             return min(res, val)
-        except Exception:
-            return 0
+        # NOTE: Seems to have started failing after upgrading python on test printer to 3.11.1, from 3.9
+        # Now returning zero on test printer. Does not return 140, so assume no exception above...
+        except Exception as e:
+            logging.exception("Unhandled exception in t5uid1.limit_extrude: %s", str(e))
+            return 140
 
     def limits(self):
         kin = self.toolhead.get_kinematics()
