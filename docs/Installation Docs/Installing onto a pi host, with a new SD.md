@@ -70,7 +70,9 @@ As an example, though, this is what I did when adapting their Dec 2022 configura
   10. Click Firmware Restart in the Mainsail window.
   11. Klipper should now display an error, "Section 'stable_z_home' is not a valid config section"
   12. Using an SSH client (like PUTtY), log into the pi and copy/paste the following sequence of commands:
-      From inside the pi directory:
+      From the pi directory:
       1.  Enter: git clone https://github.com/matthewlloyd/Klipper-Stable-Z-Home.git
       2.  cd ~/klipper/klippy/extras
       3.  ln -s ~/Klipper-Stable-Z-Home/stable_z_home.py
+  13. If you now inspect the directories, you should find that git has saved a clone of the repository Klipper_stable_z_home in the directory /home/pi and there is a symbolic link to the module stable_z_home.py in the /home/pi/klipper/klippy/extras folder.
+  14. Select Firmware_Restart in the Mainsail menu and Klipper should now be ready to use.  IF you have any other error messages from Klipper at this point, you will need to figure out what it wants and fix it. Most of their messages are easy to understand.
