@@ -4,7 +4,7 @@ The Klipper in this repo is a fork of Klipper3D/Master, which has been modified 
 This repo was forked from [the master DGUS-RELOADED project repository](https://github.com/Desuuuu/Klipper).
 The Desuuuu repo is in-turn forked from [the master Klipper3D.org github repository.](https://github.com/Klipper3d/klipper/)
 
->>**NOTE:** Desuuuu has also indicated that he intends to stop maintaining his dgus-reloaded-klipper fork, soon, so I am looking for CR6Community help to maintain and extend this fork. (See **How to Contribute**, below)
+>>**NOTE:** Desuuuu has also indicated that he intends to stop maintaining his dgus-reloaded-klipper fork, soon, so I am looking for CR6Community help to maintain and extend this fork. (See **How to Contribute to This Project**, below)
 
 ## Who should __NOT__ use this firmware?
 If your goal is to run Klipper on your CR6 without using the stock T5L DWIN display hardware, **then you do not need this modified version of Klipper.**
@@ -13,7 +13,6 @@ Just install the master Klipper3D.org version and configure it for your CR6 prin
 This repository may also be very helpful to get you started with Klipper on the CR6: https://github.com/KoenVanduffel/CR-6_Klipper
 
 ## Why Not Just Use the Desuuuu version of the Modified DGUS-Reloaded Klipper?
-Some of the functionality implemented in the CR6-specific UI is either not present or is organized differently, in the Desuuuu companion display app.
 
 1. Perhaps most importantly, Desuuuu has indicated that he intends to stop maintaining his dgus-reloaded-klipper fork. 
 
@@ -29,12 +28,15 @@ As of Jan 2023:
 - On 25 Jan 2023, Thinkersbluff was able to update the Klipper in this fork to 0.11.0, by merging this repo with [another fork of Klipper3D/Master maintained by gbkwiatt](https://github.com/gbkwiatt/klipper)
 
 Worst-case, however, this solution may someday be limited to exploiting [the features and capabilities of Klipper at the last release with which we were able to merge without conflict](https://github.com/Thinkersbluff/dgus-reloaded_klipper/blob/DGUS-ReloadedForCR6/docs/Releases.md). 
-e.g. At some future release of Klipper, changes to the klipper.bin or Make Menuconfig functionality may render the pre-built klipper.bin files available here non-functional.
+e.g. At some future release of Klipper, changes to the klipper.bin or Make Menuconfig functionality may render non-functional the pre-built klipper.bin files available here.
 
-Unfortunately, Moonraker flags installations of this repo (e.g. by configuring KIAUH to install Klipper from this repo instead of from the Klipper3D/Master github) as being "Invalid", which can be irritating.
+Unfortunately, Moonraker flags installations of this repo (e.g. by configuring KIAUH to install Klipper from this repo instead of from the Klipper3D/Master github) as being "Invalid". That means that either:  
+1. We have to keep merging this version with the Klipper3D/master repo and manually updating our systems, 
+OR 
+2. We need to be able to install DGUS-Reloaded (t5uid1) into the ~/klipper/klippy/extras folder and let Moonraker maintain our Klipper installation from the Klipper3D/master github.
 
 
-## Is It Possible Instead to Install the Latest Klipper from Klipper3D/master and STILL Use DGUS-Reloaded for CR6?
+## Is It Possible to Install the Latest Klipper from Klipper3D/master and STILL Use DGUS-Reloaded for CR6?
 Yes, actually! (Sort of...)
 
 In Feb 2023, Thinkersbluff found that it is NOT actually necessary to use ALL of this modified Klipper, to make the DGUS-Reloaded display function work.
