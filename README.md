@@ -46,6 +46,7 @@ Instead, one really only needs to
 2. Install the latest Klipper from Klipper3D/master (and Mainsail and Moonraker, all using KIAUH, per their documentation)
 3. Install (into ~/printer_data/config on your host processor) the files located in the "Overwrite these Klipper host files" subfolder applicable to your motherboard, and configure them for your specific printer/preferences. (NOTE: You can do this via the Mainsail MACHINE tab, rather than messing about with SFTP and nano, for this part)
 4. Copy the t5uid1 folder and contents into the ~/klipper/klippy/extras directory on your host (e.g. by using an SFTP program logged into your host, to transfer those files from where you extracted the downloaded release zip file on your system.)
+5. Follow the instructions on [this repo](https://github.com/matthewlloyd/Klipper-Stable-Z-Home), to also install stable_z_home.py.
 
 After that, Moonraker will "happily" maintain your Klipper installation, without overwriting t5uid1.  
 If, however, t5uid1 is updated, you may have to manually update your system, per step 4 above.
