@@ -1,7 +1,9 @@
 Last Updated: 25 Mar 23
 New at release 1.2.5
 
- - 
+ - Modified the RunABL code in varsin.cfg, to:
+	1. Perform BED_MESH_CLEAR before running BED_MESH_CALIBRATE
+	2. Explicitly name the BED_MESH PROFILE=default
 
 Known Issues at this release: (As observed on the Test Printer)
 
