@@ -35,28 +35,38 @@ Unfortunately, Moonraker flags installations of this repo (e.g. by configuring K
 OR 
 2. We need to be able to install DGUS-Reloaded (t5uid1) into the ~/klipper/klippy/extras folder and let Moonraker maintain our Klipper installation from the Klipper3D/master github.
 
+## Can I Install the Latest Klipper from Klipper3D/master and STILL Use DGUS-Reloaded for CR6?
+Yes, you can!
 
-## Is It Possible to Install the Latest Klipper from Klipper3D/master and STILL Use DGUS-Reloaded for CR6?
-Yes, actually! (Sort of...)
+It is NOT actually necessary to use ALL of this modified Klipper, to make the DGUS-Reloaded display function work on your system.
 
-In Feb 2023, Thinkersbluff found that it is NOT actually necessary to use ALL of this modified Klipper, to make the DGUS-Reloaded display function work.
+There are basically TWO modifications made to Klipper, in this repo:  
 
-Instead, one really only needs to 
+1. **The T5UID1 folder adds the DGUS-Reloaded Python scripts to the ~/klipper/klippy/extras folder of Klipper.**  
+ The DGUS_Reloaded DWIN_SET application is programmed to interact with those scripts, to provide a User Interface (UI) on the stock DWIN TFT. You can just copy that folder to the ~/klipper/klippy/extras folder of ANY Klipper installation, you do  NOT need to clone this entire modified Klipper to your system.
+
+2. **Some of the Make Menuconfig files have also been modified, to enable you to build your own klipper.bin file.**  
+When Desuuu created his fork, he set it up as a complete modified fork of Klipper, to enable a wide range of users  to build their own klipper.bin file.  
+
+I, on the other hand, am ONLY providing a working DGUS-Reloaded setup for ONE Creality printer family (CR6-MAX and SE.)  I have therefore already built, tested, and uploaded the klipper.bin files (One for each of the four motherboards designed to work with the CR6 printer). You do NOT need to build your own.  
+
+Rather than install the modified Klipper from this repository, therefore, one only needs to: 
+
 1. Download and flash the applicable klipper.bin file for the motherboard in your printer
 2. Install the latest Klipper from Klipper3D/master (and Mainsail and Moonraker, all using KIAUH, per their documentation)
 3. Install (into ~/printer_data/config on your host processor) the files located in the "Overwrite these Klipper host files" subfolder applicable to your motherboard, and configure them for your specific printer/preferences. (NOTE: You can do this via the Mainsail MACHINE tab, rather than messing about with SFTP and nano, for this part)
 4. Copy the t5uid1 folder and contents into the ~/klipper/klippy/extras directory on your host (e.g. by using an SFTP program logged into your host, to transfer those files from where you extracted the downloaded release zip file on your system.)
-5. Follow the instructions on [this repo](https://github.com/matthewlloyd/Klipper-Stable-Z-Home), to also install stable_z_home.py.
+5. Follow the instructions on [this repo](https://github.com/matthewlloyd/Klipper-Stable-Z-Home), to also install stable_z_home.py.  
+**NOTE: You can completely ignore the repos.txt file, if you do not wish to install the modified Klipper from this repository.**
 
 After that, Moonraker will "happily" maintain your Klipper installation, without overwriting t5uid1.  
-If, however, t5uid1 is updated, you may have to manually update your system, per step 4 above.
-
+If, however, t5uid1 is updated, you may have to manually update your system, per steps 3 & 4 above.
 
 ## A Word Of Warning About Klipper Documentation
 Please note that Klipper3D are very good about keeping [their online documentation](https://www.klipper3d.org/) up to date with their latest firmware.
 This repo, however, is NOT up-to-the-minute with every change they release.  That latency can mean that some of their online instructions do not work with this version of Klipper.  The documentation in this repo is, however, "frozen" at the most recent version of Klipper with which we have merged.  
 
-I recommend that you ALWAYS:
+IF you elect to install this modified Klipper INSTEAD of the Klipper3D version, THEN I recommend that you ALWAYS:
  - use [this local copy of their documentation](https://github.com/Thinkersbluff/DGUS-Reloaded_for_CR6-Klipper_Component/blob/DGUS-ReloadedForCR6/docs/Overview.md), when seeking guidance on how this particular version of modified Klipper is used, if you have decided to install from here and not from Klipper3D/master.
  - use [the online Klipper documentation](https://www.klipper3d.org/), if you have installed Klipper from Klipper3D/master.
  
