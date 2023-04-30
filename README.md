@@ -35,7 +35,6 @@ Unfortunately, Moonraker flags installations of this repo (e.g. by configuring K
 OR 
 2. We need to be able to install DGUS-Reloaded (t5uid1) into the ~/klipper/klippy/extras folder and let Moonraker maintain our Klipper installation from the Klipper3D/master github.
 
-
 ## Can I Install the Latest Klipper from Klipper3D/master and STILL Use DGUS-Reloaded for CR6?
 Yes, you can!
 
@@ -52,6 +51,7 @@ When Desuuu created his fork, he set it up as a complete modified fork of Klippe
 I, on the other hand, am ONLY providing a working DGUS-Reloaded setup for ONE Creality printer family (CR6-MAX and SE.)  I have therefore already built, tested, and uploaded the klipper.bin files (One for each of the four motherboards designed to work with the CR6 printer). You do NOT need to build your own.  
 
 Rather than install the modified Klipper from this repository, therefore, one only needs to: 
+
 1. Download and flash the applicable klipper.bin file for the motherboard in your printer
 2. Install the latest Klipper from Klipper3D/master (and Mainsail and Moonraker, all using KIAUH, per their documentation)
 3. Install (into ~/printer_data/config on your host processor) the files located in the "Overwrite these Klipper host files" subfolder applicable to your motherboard, and configure them for your specific printer/preferences. (NOTE: You can do this via the Mainsail MACHINE tab, rather than messing about with SFTP and nano, for this part)
@@ -61,7 +61,6 @@ Rather than install the modified Klipper from this repository, therefore, one on
 
 After that, Moonraker will "happily" maintain your Klipper installation, without overwriting t5uid1.  
 If, however, t5uid1 is updated, you may have to manually update your system, per steps 3 & 4 above.
-
 
 ## A Word Of Warning About Klipper Documentation
 Please note that Klipper3D are very good about keeping [their online documentation](https://www.klipper3d.org/) up to date with their latest firmware.
