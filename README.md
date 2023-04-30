@@ -45,7 +45,7 @@ There are basically TWO modifications made to Klipper, in this repo:
 1. **The T5UID1 folder adds the DGUS-Reloaded Python scripts to the ~/klipper/klippy/extras folder of Klipper.**  
  The DGUS_Reloaded DWIN_SET application is programmed to interact with those scripts, to provide a User Interface (UI) on the stock DWIN TFT. You can just copy that folder to the ~/klipper/klippy/extras folder of ANY Klipper installation, you do  NOT need to clone this entire modified Klipper to your system.
 
-2. **Some of the MakeFlash files have also been modified, to enable you to build your own klipper.bin file.**  
+2. **Some of the Make Menuconfig files have also been modified, to enable you to build your own klipper.bin file.**  
 When Desuuu created his fork, he set it up as a complete modified fork of Klipper, to enable a wide range of users  to build their own klipper.bin file.  
 
 I, on the other hand, am ONLY providing a working DGUS-Reloaded setup for ONE Creality printer family (CR6-MAX and SE.)  I have therefore already built, tested, and uploaded the klipper.bin files (One for each of the four motherboards designed to work with the CR6 printer). You do NOT need to build your own.  
