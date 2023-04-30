@@ -4,9 +4,9 @@ I have used quite verbose folder names, to give you a clue as to what files you 
 
 1. Flash this firmware.bin file if...
 
-Part of the Klipper installation process involves using a utility called Make Menuconfig, to generate a configuration file, and then to Make (compile) a Klipper.bin based on that configuration file, with which to flash Klipper to your printer's motherboard. 
+Part of the normal Klipper installation process involves using a utility called Make Menuconfig, to generate a configuration file, and then to Make (compile) a Klipper.bin based on that configuration file, with which to flash Klipper to your printer's motherboard. 
 
-If you also happen to have a BTT SKR CR6 motherboard, you can just flash the firmware.bin file in this folder & skip the Make Menuconfig/Make steps.
+In this repo, you will find pre-made klipper.bin files for the BTT SKR CR6 and Creality 4.5.2/4.5.3/1.1.0.3 motherboards. If yours is a CR6 printer, just flash the firmware.bin file from the applicable folder & skip the Make Menuconfig/Make steps.
 
 2. Overwrite these Klipper host files\Upload these configuration files to the Machine folder in Mainsail
 
@@ -19,10 +19,11 @@ I have included all of my configuration files in this distribution, in the folde
 	- Converted to Direct Drive, with 
 		- Orbiter v1.5 extruder and 
 		- a pancake Moons extruder motor
-      - Using a BTT SKR CR6 v1.0 motherboard
 	- Y motor converted to 0.8 degree version
 
-I have not yet reviewed those files to comment-out or modify settings unique to my system, so be aware that you will likely need to make changes, before these will work on your system.
+When I started this project, I had a BTT SKR CR6 motherboard.  I now use a Creality 1.1.0.3 ERA motherboard.  I have uploaded copies of the configuration files for both motherboards, here, to get you started. 
+
+Be aware that you will likely need to change some settings before these will work on your system. 
 	e.g. Printer.cfg and CR6.cfg will both require edits to adjust the extruder & stepper motor and performance settings, at least
 
 If you plan to install this modified Klipper onto an existing Klipper system, you may prefer to keep your existing configuration files and just compare with the ones I have included, to spot and transfer any relevant differences between the two. (A tool like Winmerge is excellent for that type of comparison and harmonization task.)
@@ -38,6 +39,12 @@ If you use Fluidd, my apologies, but I do not, so you will likely need to do som
 
 I recommend that you use KIAUH to help you make this installation of Klipper, (and Moonraker and Mainsail, if you also need to install those.)
 
-Once you have KIAUH installed, upload the klipper_repos.txt file into ~/kiauh on the host, so that you are able to select the correct repository from which Klipper should be installed.
+NOTE: IF you are using this firmware on a CR6 printer, you do not need to install klipper-repos.txt and you do NOT need to install the modified Klipper from this repo.  You can, instead, use the pre-made klipper.bin file per step 1, above, and install the current Klipper from Klipper3D.org/master.  Then copy (e.g. by FTP) the T5uid1 folder and contents into ~klipper/klippy/extras.  This will enable Moonraker to maintain klipper for you, without having to keep reinstalling the extras.
 
-CAUTION: Moonraker does not trust software distributions from forked repositories of forked repositories.  It also does not like it when you edit or overwrite the distributed files.  As a result, you will see a red "Invalid" tag beside the Klipper entry.  We are still investigating options for fixing that.  We may be out of luck.  TBD.  Moonraker does seem to go ahead and update the distribution anyway, so it should not be a "show-stopper" that it is doing this...
+
+NOTE: IF - you are trying to use this DGUS-Reloaded firmware on a printer that is NOT a CR6 (and your screen is 272x480 pixels or you plan to refactor the DWIN_SET component for your display.)
+THEN - Once you have KIAUH installed, upload the klipper_repos.txt file into ~/kiauh on the host, so that you are able to select this repository as the one from which KIAUH should install Klipper.  Then use Make Menuconfig and Make, to create your own klipper.bin file and flash that to your motherboard.  After that, you can change KIAUH back to loading Klipper from Klipper3D.org/master.
+THEN - Copy (e.g. by FTP) the T5uid1 folder and contents into ~klipper/klippy/extras.  This will enable Moonraker to maintain klipper for you, without having to keep reinstalling the extras.
+
+
+
