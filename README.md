@@ -53,20 +53,21 @@ I, on the other hand, am ONLY providing a working DGUS-Reloaded setup for ONE Cr
 Rather than install the modified Klipper from this repository, therefore, one only needs to: 
 
 1. Download and unzip the Source.zip file for the latest release on this repository.
-2. In the "Flash this to the motherboard" sub-folder of the "Related Changes" folder from the unzipped Source.zip archive, find the applicable klipper.bin file for the motherboard in your printer and flash that file to your printer.
+2. In the "Related Changes" folder from the unzipped Source.zip archive, in the "Flash this to the motherboard" sub-folder of the motherboard sub-folder applicable to your printer,  find the  klipper.bin file and flash that file to your printer.
 3. Navigate to [https://github.com/th33xitus/kiauh](https://github.com/th33xitus/kiauh) and familiarize yourself with KIAUH by reviewing the ReadMe file there.
 4. Install the latest Klipper from Klipper3D/master (and Mainsail and Moonraker) to your host single-board computer (SBC) or Linux computer, all [using KIAUH, per their documentation](https://github.com/th33xitus/kiauh)
-5. In the "Overwrite these Klipper host files" motherboard sub-folder of the "Related Changes" folder from the unzipped Source.zip archive, find and unzip the applicable MACHINE_Configs....zip file for the motherboard in your printer.
+5. In the "Related Changes" folder from the unzipped Source.zip archive, in the "Overwrite these Klipper host files" sub-folder of the motherboard sub-folder applicable to your printer,  find and unzip the applicable MACHINE_Configs....zip file.
 6. First read the ReadMe.txt file in the MACHINE_Configs....zip file, to familiarize yourself with the purpose of each file and note any changes made since the last release.
 7. Then copy the applicable files into ~/printer_data/config on your host processor and configure them for your specific printer/preferences.
    NOTES: a) You can upload files to ~/printer_data/config via the Mainsail MACHINE tab, rather than messing about with SFTP and nano, if you prefer
-          b) You can use a utility like [Winmerge](https://winmerge.org/downloads/?lang=en) to compare the new files with existing files, if you prefer to modify existing files, rather than overwriting them.
-8. Copy the t5uid1 folder and contents into the ~/klipper/klippy/extras directory on your host (e.g. by using an SFTP program logged into your host, to transfer those files from the folder DGUS-Reloaded_for_CR6-Klipper_Component-..../klippy/extras that you extracted from the downloaded release zip file on your system.
-9. Follow the instructions on [this repo](https://github.com/matthewlloyd/Klipper-Stable-Z-Home), to also install stable_z_home.py.  
+          b) You can use a utility like [Winmerge](https://winmerge.org/downloads/?lang=en) to compare the new files with existing files, if you prefer to selectively modify the existing files, rather than replacing them.
+8. Edit the applicable configuration files, as required, to match your particular printer and preferences.
+9. Copy the t5uid1 folder and contents into the ~/klipper/klippy/extras directory on your host (e.g. by using an SFTP program logged into your host, to transfer those files from the folder DGUS-Reloaded_for_CR6-Klipper_Component-..../klippy/extras that you extracted from the downloaded release zip file on your system.
+10. Follow the instructions on [this repo](https://github.com/matthewlloyd/Klipper-Stable-Z-Home), to also install stable_z_home.py.  
 **NOTE: You can completely ignore the repos.txt file, if you do not wish to install the modified Klipper from this repository.**
-10. Restart Klipper.
+11. Restart Klipper.
 
-After that, Moonraker will "happily" maintain your Klipper installation, without overwriting t5uid1.  
+In future, Moonraker will "happily" maintain your Klipper installation, without overwriting t5uid1.  
 If, however, t5uid1 is updated, you may have to manually update your system, per steps 3 & 4 above.
 
 ## A Word Of Warning About Klipper Documentation
