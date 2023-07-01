@@ -55,7 +55,7 @@ Rather than install the modified Klipper from this repository, therefore, one on
 1. Download and unzip the Source.zip file for the latest release on this repository.
 2. In the "Flash this to the motherboard" sub-folder of the "Related Changes" folder from the unzipped Source.zip archive, find the applicable klipper.bin file for the motherboard in your printer and flash that file to your printer.
 3. Navigate to [https://github.com/th33xitus/kiauh](https://github.com/th33xitus/kiauh) and familiarize yourself with KIAUH by reviewing the ReadMe file there.
-4. Install the latest Klipper from Klipper3D/master (and Mainsail and Moonraker to your host single-board computer (SBC) or Linux computer, all [using KIAUH, per their documentation](https://github.com/th33xitus/kiauh))
+4. Install the latest Klipper from Klipper3D/master (and Mainsail and Moonraker) to your host single-board computer (SBC) or Linux computer, all [using KIAUH, per their documentation](https://github.com/th33xitus/kiauh)
 5. In the "Overwrite these Klipper host files" motherboard sub-folder of the "Related Changes" folder from the unzipped Source.zip archive, find and unzip the applicable MACHINE_Configs....zip file for the motherboard in your printer.
 6. First read the ReadMe.txt file in the MACHINE_Configs....zip file, to familiarize yourself with the purpose of each file and note any changes made since the last release.
 7. Then copy the applicable files into ~/printer_data/config on your host processor and configure them for your specific printer/preferences.
