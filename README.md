@@ -53,7 +53,7 @@ I, on the other hand, am ONLY providing a working DGUS-Reloaded setup for ONE Cr
 Rather than install the modified Klipper from this repository, therefore, one only needs to: 
 
 1. Download and flash the applicable klipper.bin file for the motherboard in your printer
-2. Install the latest Klipper from Klipper3D/master (and Mainsail and Moonraker, all using KIAUH, per their documentation)
+2. Install the latest Klipper from Klipper3D/master (and Mainsail and Moonraker, all [using KIAUH, per their documentation](https://github.com/th33xitus/kiauh))
 3. Install (into ~/printer_data/config on your host processor) the files located in the "Overwrite these Klipper host files" subfolder applicable to your motherboard, and configure them for your specific printer/preferences. (NOTE: You can do this via the Mainsail MACHINE tab, rather than messing about with SFTP and nano, for this part)
 4. Copy the t5uid1 folder and contents into the ~/klipper/klippy/extras directory on your host (e.g. by using an SFTP program logged into your host, to transfer those files from where you extracted the downloaded release zip file on your system.)
 5. Follow the instructions on [this repo](https://github.com/matthewlloyd/Klipper-Stable-Z-Home), to also install stable_z_home.py.  
