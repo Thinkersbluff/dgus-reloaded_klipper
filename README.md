@@ -47,7 +47,11 @@ There are basically TWO modifications made to Klipper, in this repo:
 
 2. **Some of the Make Menuconfig files have also been modified, to enable you to build your own klipper.bin file.**  
 When Desuuu created his fork, he set it up as a complete modified fork of Klipper, to enable a wide range of users  to build their own klipper.bin file. 
-I, on the other hand, am ONLY providing a working DGUS-Reloaded setup for ONE Creality printer family (CR6-MAX and SE.)  I have therefore already built, tested, and uploaded the klipper.bin files (One for each of the four motherboards designed to work with the CR6 printer). You do NOT need to build your own.  
+I, on the other hand, am ONLY providing a working DGUS-Reloaded setup for ONE Creality printer family (CR6-MAX and SE.)  I have therefore already built, tested, and uploaded the klipper.bin files (One for each of the four motherboards designed to work with the CR6 printer).
+
+Since I have already built the klipper.bin files for your CR6 printer, you do NOT need to install the modified Klipper that would allow you to build your own.  
+
+If you do NOT install this modified Klipper, though, you will need to manually install the t5uid1 application into the ~klipper/klippy/extras folder on your Klipper host.  The following section tells you how to do that.
 
 ## Guidelines for How to Install DGUS-Reloaded with the Latest Klipper
 Rather than install the full modified Klipper from this repository, with DGUS-Reloaded already installed, you can instead follow these instructions to first install the latest Klipper and then add the DGUS-Reloaded functionality.  That way, Moonraker will automatically maintain your Klipper installation.
