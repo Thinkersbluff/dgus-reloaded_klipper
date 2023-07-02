@@ -35,6 +35,15 @@ Unfortunately, Moonraker flags installations of this repo (e.g. by configuring K
 OR 
 2. We need to be able to install DGUS-Reloaded (t5uid1) into the ~/klipper/klippy/extras folder and let Moonraker maintain our Klipper installation from the Klipper3D/master github.
 
+## Should I Install the Modified Klipper From This Repo?
+You certainly could, but I don't.  
+
+When I first created this repo, I did not yet know whether users of any particular motherboard would need to create their own klipper.bin file.  
+Now, we know that the same klipper.bin file works on all 3 of the Creality boards, and the firmware.bin file works on the BTT SKR CR6 board, so we do NOT need to install the modified Klipper files.  
+
+I have left the modified files here and have left documentation that describes how to install it, but I recommend that users instead follow the guidance in the next two sections.
+
+
 ## Can I Install the Latest Klipper from Klipper3D/master and STILL Use DGUS-Reloaded for CR6?
 Yes, you can!
 
