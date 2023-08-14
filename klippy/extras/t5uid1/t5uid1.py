@@ -546,28 +546,56 @@ class T5UID1:
         self._variable_data[name] = value
 
     def check_paused(self):
+        # If the printer is not printing a model, exit this process
         if not self._is_printing:
             return
-        if not self.pause_resume.is_paused:
-            return
+        # If the printer is not paused, exit this process - disabled because prevents processing resume action
+        # if not self.pause_resume.is_paused:
+        #    return
+        # If the printer has resumed printing but the print_paused page is still displayed, assume the printer has been resumed by a RESUME macro
+        # and restore the displayed page to "print_status"
+        if self._current_page == "print_paused" and not self.pause_resume.is_paused:
+            self.switch_page("print_status")
+            self._current_page = "print_status"
+        # If the printer is paused but the displayed page is still "print_status", assume the printer has been paused by Klipper
+        # e.g. M600 or PAUSE macros) and change the display page to "print_paused".
+        if self._current_page == "print_status" and self.pause_resume.is_paused:
+            self.switch_page("print_paused")
+            self._current_page = "print_paused"
+        # Keep track of the amount of time spent paused (i.e. "time not printing") 
+        # to be able to subtract that from the total at the end of the job, as follows:        
+        # Step 1: set the variable curtime to the value of "time now"
         curtime = self.reactor.monotonic()
+        # Step 2: If this is the first iteration of check_paused since the printer was paused, set the value of self._print_pause_time to "time now"
         if self._print_pause_time < 0 and self.pause_resume.is_paused:
             self._print_pause_time = curtime
-        elif self._print_pause_time >= 0 and not self.pause_resume.is_paused:
+        # Step 4: When the printer is resumed add the total amount of time that the printer was paused to the print start time, 
+        # so that the total time printed (calculcated as "end time" - "start time") will not include that amount of time
+        #if pause_duration > 0:
+        if self._print_pause_time >= 0 and not self.pause_resume.is_paused:
             pause_duration = curtime - self._print_pause_time
-            if pause_duration > 0:
-                self._print_start_time += pause_duration
+            self._print_start_time += pause_duration
+            # Now reset the trigger so that if the current print is pause again, the above process will also  measure the new print paused time.
             self._print_pause_time = -1
 
     def get_status(self, eventtime):
         pages = { p: self._pages[p].id for p in self._pages }
         res = dict(self._status_data)
-        if not self._is_printing:
-            print_duration = self._print_end_time - self._print_start_time
-        elif self._print_pause_time >= 0:
-            print_duration = self._print_pause_time - self._print_start_time
-        else:
-            print_duration = eventtime - self._print_start_time
+        # Commented-out print duration calculations, troubleshooting M112 on Resumef
+        # Replaced with default - at worst will include time spent paused...
+        print_duration = self._print_end_time - self._print_start_time 
+    # Calculate the current value of print_duration, before performing the update routine
+        # If finished printing, print duration = "time at finish" - "time at start"
+        #if not self._is_printing:
+        #    print_duration = self._print_end_time - self._print_start_time 
+        # If printing is paused, print duration = "time when paused" - "time at start"
+        # elif self._print_pause_time >= 0:
+        #    print_duration = self._print_pause_time - self._print_start_time
+        # If printing, print_duration = "current time" - "time at start", iff "eventtime"= "current_time"
+        #else:
+        #    print_duration = eventtime - self._print_start_time
+
+        # update() the res dictionary based on the  keys and current values declared within the {} braces here:
         res.update({
             'version': self._version,
             'machine_name': self._machine_name,
@@ -839,10 +867,10 @@ class T5UID1:
             and self._z_max < z_max
             and self._z_max > z_min):
             z_max = self._z_max
-        x_min_inset = min(self._x_min_inset, (x_max - x_min) / 2)
-        x_max_inset = min(self._x_max_inset, (x_max - x_min) / 2)
-        y_min_inset = min(self._y_min_inset, (y_max - y_min) / 2)
-        y_max_inset = min(self._y_max_inset, (y_max - y_min) / 2)
+        x_min_inset = min(self._x_min_inset, (x_max - x_min) / 2.0)
+        x_max_inset = min(self._x_max_inset, (x_max - x_min) / 2.0)
+        y_min_inset = min(self._y_min_inset, (y_max - y_min) / 2.0)
+        y_max_inset = min(self._y_max_inset, (y_max - y_min) / 2.0)
         return {
             'x_min': x_min,
             'x_max': x_max,
