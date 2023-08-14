@@ -43,7 +43,6 @@ Now, we know that the same klipper.bin file works on all 3 of the Creality board
 
 I have left the modified files here and have left documentation that describes how to install it, but I recommend that users instead follow the guidance in the next two sections.
 
-
 ## Can I Install the Latest Klipper from Klipper3D/master and STILL Use DGUS-Reloaded for CR6?
 Yes, you can!
 
