@@ -35,6 +35,14 @@ Unfortunately, Moonraker flags installations of this repo (e.g. by configuring K
 OR 
 2. We need to be able to install DGUS-Reloaded (t5uid1) into the ~/klipper/klippy/extras folder and let Moonraker maintain our Klipper installation from the Klipper3D/master github.
 
+## Should I Install the Modified Klipper From This Repo?
+You certainly could, but I don't.  
+
+When I first created this repo, I did not yet know whether users of any particular motherboard would need to create their own klipper.bin file.  
+Now, we know that the same klipper.bin file works on all 3 of the Creality boards, and the firmware.bin file works on the BTT SKR CR6 board, so we do NOT need to install the modified Klipper files.  
+
+I have left the modified files here and have left documentation that describes how to install it, but I recommend that users instead follow the guidance in the next two sections.
+
 ## Can I Install the Latest Klipper from Klipper3D/master and STILL Use DGUS-Reloaded for CR6?
 Yes, you can!
 
@@ -46,21 +54,47 @@ There are basically TWO modifications made to Klipper, in this repo:
  The DGUS_Reloaded DWIN_SET application is programmed to interact with those scripts, to provide a User Interface (UI) on the stock DWIN TFT. You can just copy that folder to the ~/klipper/klippy/extras folder of ANY Klipper installation, you do  NOT need to clone this entire modified Klipper to your system.
 
 2. **Some of the Make Menuconfig files have also been modified, to enable you to build your own klipper.bin file.**  
-When Desuuu created his fork, he set it up as a complete modified fork of Klipper, to enable a wide range of users  to build their own klipper.bin file.  
+When Desuuu created his fork, he set it up as a complete modified fork of Klipper, to enable a wide range of users  to build their own klipper.bin file. 
+I, on the other hand, am ONLY providing a working DGUS-Reloaded setup for ONE Creality printer family (CR6-MAX and SE.)  I have therefore already built, tested, and uploaded the klipper.bin files (One for each of the four motherboards designed to work with the CR6 printer).
 
-I, on the other hand, am ONLY providing a working DGUS-Reloaded setup for ONE Creality printer family (CR6-MAX and SE.)  I have therefore already built, tested, and uploaded the klipper.bin files (One for each of the four motherboards designed to work with the CR6 printer). You do NOT need to build your own.  
+Since I have already built the klipper.bin files for your CR6 printer, you do NOT need to install the modified Klipper that would allow you to build your own.  
 
-Rather than install the modified Klipper from this repository, therefore, one only needs to: 
+If you do NOT install this modified Klipper, though, you will need to manually install the t5uid1 application into the ~klipper/klippy/extras folder on your Klipper host.  The following section tells you how to do that.
 
-1. Download and flash the applicable klipper.bin file for the motherboard in your printer
-2. Install the latest Klipper from Klipper3D/master (and Mainsail and Moonraker, all using KIAUH, per their documentation)
-3. Install (into ~/printer_data/config on your host processor) the files located in the "Overwrite these Klipper host files" subfolder applicable to your motherboard, and configure them for your specific printer/preferences. (NOTE: You can do this via the Mainsail MACHINE tab, rather than messing about with SFTP and nano, for this part)
-4. Copy the t5uid1 folder and contents into the ~/klipper/klippy/extras directory on your host (e.g. by using an SFTP program logged into your host, to transfer those files from where you extracted the downloaded release zip file on your system.)
-5. Follow the instructions on [this repo](https://github.com/matthewlloyd/Klipper-Stable-Z-Home), to also install stable_z_home.py.  
-**NOTE: You can completely ignore the repos.txt file, if you do not wish to install the modified Klipper from this repository.**
+## Guidelines for How to Install DGUS-Reloaded with the Latest Klipper
+Rather than install the full modified Klipper from this repository, with DGUS-Reloaded already installed, you can instead follow these instructions to first install the latest Klipper and then add the DGUS-Reloaded functionality.  That way, Moonraker will automatically maintain your Klipper installation.
 
-After that, Moonraker will "happily" maintain your Klipper installation, without overwriting t5uid1.  
-If, however, t5uid1 is updated, you may have to manually update your system, per steps 3 & 4 above.
+1. Download and unzip the Source.zip file for the latest release on this repository. (NOTE: The file and folder names in Sources.zip are quite verbose, so you will first need to significantly shorten the top-level folder name in the zipfile ((e.g. to DGUS-Reloaded), to successfully "extract all" the contents.)
+2. If you have not already done so, now create a Linux computer host for Klipper.  (NOTE: If you already have the Klipper/Mainsail host configured and are now updating it to use DGUS-Reloaded, then skip to step 6.)
+
+There are many options for the Klipper host computer and it would greatly complicate these instructions if I tried to try to cover them all.  
+For simplicity's sake, I will assume you are using a single Raspberry Pi Single Board Computer as your host.
+
+3. There are two particularly easy ways to install Klipper with a Mainsail front-end, on a Raspberry Pi.  
+   Both methods are supported by the Raspberry Pi Imager software. Download and install the appropriate version from here: [https://www.raspberrypi.com/software/](https://www.raspberrypi.com/software/)
+
+4. To install MainsailOS (recommended), navigate to [https://docs-os.mainsail.xyz/](https://docs-os.mainsail.xyz/) and follow their instructions.
+  OR  
+   To use KIAUH (which may be easier if using a laptop or desktop computer as the Klipper host), navigate to [https://github.com/th33xitus/kiauh](https://github.com/th33xitus/kiauh) and follow those instructions.
+
+Once you have installed Klipper and Mainsail, you should be able to browse to your Klipper host in the Mainsail front-end, to finish the installation and configuration:   
+
+5. In the "Related Changes" folder from the unzipped Source.zip archive, in the "Overwrite these Klipper host files" sub-folder of the motherboard sub-folder applicable to your printer,  find and unzip the applicable MACHINE_Configs....zip file.  
+6. First read the ReadMe.txt file in the MACHINE_Configs....zip file, to familiarize yourself with the purpose of each file and note any changes made since the last release.  
+7. Then copy the applicable files into ~/printer_data/config on your host processor **and configure them for your specific printer/preferences.**  
+   **NOTES:**  
+          a)  You can upload files to ~/printer_data/config via the Mainsail MACHINE tab, rather than messing about with SFTP and nano, if you prefer.  
+          b)  You can use a utility like [Winmerge](https://winmerge.org/downloads/?lang=en) to compare the new files with existing files, if you prefer to selectively modify the existing files, rather than replacing them.  
+          c) **You can completely ignore the KIAUH repos.txt file**    
+8. Copy the t5uid1 folder and contents into the ~/klipper/klippy/extras directory on your host (e.g. by using an SFTP program logged into your host, to transfer those files from the folder DGUS-Reloaded_for_CR6-Klipper_Component-..../klippy/extras that you extracted from the downloaded release zip file on your system.)
+9. Follow the instructions on [https://github.com/matthewlloyd/Klipper-Stable-Z-Home](https://github.com/matthewlloyd/Klipper-Stable-Z-Home), to also install stable_z_home.py.  
+10. In the "Related Changes" folder from the unzipped Source.zip archive, in the "Flash this to the motherboard" sub-folder of the motherboard sub-folder applicable to your printer,  find the  klipper.bin file and flash that file to your printer.
+11. Restart your printer.
+12. Restart Klipper.
+
+Klipper should now connect with your mcu and Mainsail should support printing.  Until you have the matching DWIN_SET installed on your stock display, however, the display will still not function correctly.  
+
+If instead you see error messages in Mainsail, you will need to resolve whatever problems are reported, until Klipper connects and reports "Ready".
 
 ## A Word Of Warning About Klipper Documentation
 Please note that Klipper3D are very good about keeping [their online documentation](https://www.klipper3d.org/) up to date with their latest firmware.
