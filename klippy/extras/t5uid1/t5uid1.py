@@ -794,6 +794,10 @@ class T5UID1:
         return self.heaters.lookup_heater(heater).min_extrude_temp
 
     def probed_matrix(self):
+        # This routine draws a checkmark at each probed point, as the ABL process executes
+        # In the DWIN_SET app, the total matrix requires two full words to describe the 25 points
+        # The first 16 points are stored in the first word (0x3122)
+        # The remaining nine points are stored in the second word (0x3123)
         if self.bed_mesh is None:
             return 0
         count = len(self.bed_mesh.bmc.probe_helper.results)
@@ -803,6 +807,7 @@ class T5UID1:
                       19, 18, 17, 16, 15,
                       20, 21, 22, 23, 24]
         res = 0
+        # This process re-draws the probed_matrix map, based on how many points have been probed so far
         for i in range(25):
             if count > points_map[i]:
                 if i < 16:
