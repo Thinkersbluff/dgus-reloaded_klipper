@@ -1,0 +1,22 @@
+Last Updated: 18 Aug 23
+New at release 1.2.7
+
+  - Added support for DWIN_SET v 0.3.9:
+    - Overhauled the cfg files and macros supporting the Calibration Leveling screens
+	- Moved Z Offset to its own screen, and extended it to document and support a recommended workflow
+	- Extended the Manual Leveling screen to also provide value to those who use ABL
+        - Extended the ABL screen, to enable LOAD and REMOVE profile
+    - Added Filament Runout status and Enable|Disable control to the Printing and Print Paused screens
+    - Fixed a couple of bugs in the PAUSE and CANCEL macros
+  - Moved a couple of variables to deconflict some memory allocations
+
+
+Known Issues at this release: (As observed on the Test Printer)
+
+1. If PAUSE or STOP is pressed while the printer is waiting for a heater to achieve a temperature target, the printer may show the print paused screen, and may park the head, but not actually be paused... In such cases, when the target is achieved, the toolhead may move back to continue the print, with the screen still showing Print Paused. While parked, in that case, trying to change filament will instead result only in a "Busy..." message.
+Work around is: Avoid using PAUSE or STOP until after the printer completes printing the purge line.
+
+
+NOTE: I could use a bit of help to analyse and modify the Python bits of the Klipper side.  Please join me in the Discussions section, if you think you can help.  
+
+Cheers!
