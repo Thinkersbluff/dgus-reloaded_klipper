@@ -2,12 +2,12 @@ Last Updated: 26 Aug 23
 New at release 1.2.9
 
 	- brightness: 100 commented-out of DGUS-Reloaded.cfg, to fix Issue#37
-          Display now powers-up with the last chosen brightness level, instead of at 100%
+          Display now powers-up with the last brightness level selected when SAVE_CONFIG was used, instead of starting at 100%
 	  
 
 Known Issues at this release: (As observed on the Test Printer)
 
-
+ - If you select a different screen brightness level, but do not use SAVE_CONFIG, the screen will boot up to the last brightness level selected when SAVE_CONFIG was last run
 
 NOTE: I could use a bit of help to analyse and modify the Python bits of the Klipper side.  Please join me in the Discussions section, if you think you can help.  
 
