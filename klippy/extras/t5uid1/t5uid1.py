@@ -128,7 +128,7 @@ class T5UID1:
         self._volume = config.getint('volume', DEFAULT_VOLUME,
                                      minval=0, maxval=100)
         self._brightness = config.getint('brightness', DEFAULT_BRIGHTNESS,
-                                         minval=0, maxval=100)
+                                         minval=10, maxval=100)
         self._boot_sound = config.getint('boot_sound',
                                          firmware_cfg['boot_sound'],
                                          minval=-1, maxval=255)
