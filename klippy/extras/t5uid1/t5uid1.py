@@ -45,7 +45,7 @@ CONTROL_TYPES = {
 def map_value_range(x, in_min, in_max, out_min, out_max):
     return int(round((x - in_min)
                      * (out_max - out_min)
-                     / (in_max - in_min)
+                     // (in_max - in_min)
                      + out_min))
 
 def get_duration(secs):
@@ -67,6 +67,23 @@ def get_duration(secs):
        result = "%sh" % (hrs,) + " " + result
     if dys:
        result = "%sd" % (dys,) + " " + result
+    return result
+
+def get_remaining(minutes):
+    if type(minutes) is not int:
+        minutes = int(minutes)
+    if minutes < 0:
+        minutes = 0
+    hours = minutes // 60
+    days = hours // 24
+    days %= 365
+    hours %= 24
+    minutes %= 60
+    result = str(minutes) + "m"
+    if hours:
+        result = str(hours) + "h " + result
+    if days:
+        result = str(days) + "d " + result
     return result
 
 def bitwise_and(lhs, rhs):
@@ -164,6 +181,7 @@ class T5UID1:
         self._print_start_time = -1
         self._print_pause_time = -1
         self._print_end_time = -1
+        self._print_time_remaining = 0
         self._boot_page = self._timeout_page = self._shutdown_page = None
         self._t5uid1_ping_cmd = self._t5uid1_write_cmd = None
         self._is_connected = False
@@ -204,7 +222,8 @@ class T5UID1:
             'heater_max_temp': self.heater_max_temp,
             'probed_matrix': self.probed_matrix,
             'pid_param': self.pid_param,
-            'get_duration': get_duration
+            'get_duration': get_duration,
+            'get_remaining': get_remaining
         })
 
         context_routine = dict(global_context)
@@ -609,14 +628,15 @@ class T5UID1:
             'control_types': CONTROL_TYPES,
             'is_printing': self._is_printing,
             'print_progress': self._print_progress,
-            'print_duration': max(0, print_duration)
+            'print_duration': max(0, print_duration),
+            'time_remaining': self._print_time_remaining
         })
         return res
 
     def _send_update(self, eventtime):
         if not self._is_connected or not self._current_page:
             return self.reactor.NEVER
-        try:
+        try:# Try updating the var_auto variables on the current page
             self.send_page_vars(self._current_page, complete=False)
         except Exception as e:
             logging.exception("Unhandled exception in update timer: %s", str(e))
@@ -930,6 +950,7 @@ class T5UID1:
         self._print_start_time = self.reactor.monotonic()
         self._print_pause_time = -1
         self._print_end_time = -1
+        self._print_time_remaining = 0
         self._is_printing = True
         self.check_paused()
         if 'print_start' in self._routines:
@@ -946,13 +967,19 @@ class T5UID1:
                 self._print_start_time += pause_duration
             self._print_pause_time = -1
         self._print_end_time = curtime
+        self._print_time_remaining = 0
         self._is_printing = False
         if 'print_end' in self._routines:
             self.start_routine('print_end')
 
     def cmd_M73(self, gcmd):
-        progress = gcmd.get_int('P', 0)
-        self._print_progress = min(100, max(0, progress))
+        # The message may be M3 P_ R_ or M73 P_ or M73 R_
+        if gcmd.get_int('P', 0):
+            progress = gcmd.get_int('P', 0)
+            self._print_progress = min(100, max(0, progress))
+        if gcmd.get_int('R', 0):
+            remaining = gcmd.get_int('R', 0)
+            self._print_time_remaining = max(0, remaining)
         if self._original_M73 is not None:
             self._original_M73(gcmd)
 
