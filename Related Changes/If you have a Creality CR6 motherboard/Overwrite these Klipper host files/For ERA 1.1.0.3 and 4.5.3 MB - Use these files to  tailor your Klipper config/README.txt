@@ -1,4 +1,4 @@
-Last Updated : 18 Aug 2023
+Last Updated : 15 Mar 2024
 
 These files were downloaded from the Mainsail MACHINE CONFIG FILES tab of the test printer, at release time.
 
@@ -8,4 +8,4 @@ While they are uniquely configured to run on the test system, they also provide 
 NOTE: If you decide to make a new installation of Mainsail/Moonraker/Klipper, then you can upload these files as-is, then proceed to tailor printer.cfg to match your system and to suit your preferences.
 There are copious notes throughout the files where they require you to tailor them for your own system.
 
-The Development_Macros file adds a couple of macros that help developers research the names/states of available parameters.  It is not needed, for the DGUS-Reloaded app to work. You can comment-out the include statement from printer.cfg if you wish.
+The Dev_Macros.cfg file adds a couple of macros that help developers research the names/states of available parameters.  It is not needed, for the DGUS-Reloaded app to work. You can comment-out the include statement from printer.cfg if you wish.
