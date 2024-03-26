@@ -88,6 +88,9 @@ Once you have installed Klipper and Mainsail, you should be able to browse to yo
           c) **You can completely ignore the KIAUH repos.txt file**    
 8. Copy the t5uid1 folder and contents into the ~/klipper/klippy/extras directory on your host (e.g. by using an SFTP program logged into your host, to transfer those files from the folder DGUS-Reloaded_for_CR6-Klipper_Component-..../klippy/extras that you extracted from the downloaded release zip file on your system.)
 9. Follow the instructions on [https://github.com/matthewlloyd/Klipper-Stable-Z-Home](https://github.com/matthewlloyd/Klipper-Stable-Z-Home), to also install stable_z_home.py.  
+   NOTE: To Clone a Repo:  
+  i) log in to the Klipper host via SSH (e.g. Using PUtTy)  
+ ii) At the Home directory, type:  <code>git clone https://github.com/matthewlloyd/Klipper-Stable-Z-Home.git</code>
 10. In the "Related Changes" folder from the unzipped Source.zip archive, in the "Flash this to the motherboard" sub-folder of the motherboard sub-folder applicable to your printer,  find the  klipper.bin file and flash that file to your printer.
 11. Restart your printer.
 12. Restart Klipper.
