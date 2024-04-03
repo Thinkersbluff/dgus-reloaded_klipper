@@ -99,6 +99,15 @@ Klipper should now connect with your mcu and Mainsail should support printing.  
 
 If instead you see error messages in Mainsail, you will need to resolve whatever problems are reported, until Klipper connects and reports "Ready".
 
+## Slicer-Specific Configuration Guidelines
+The Print screens rely on receiving M73 P.. messages, to display % progress and M73 R.. messages, to display time remaining.
+You will need to find and configure those settings in your slicer, for the screen to display those parameters.
+
+At 5.7.0, Cura redacted the two Add-ins I used to recommend using, and replaced them with one new Add-In, "Display Info on LCD."
+Here are the settings that I use, at 5.7.0+:
+![image](https://github.com/Thinkersbluff/DGUS-Reloaded_for_CR6-Klipper_Component/assets/36551518/bc45b485-9909-4a13-abc5-619916693093)
+
+
 ## A Word Of Warning About Klipper Documentation
 Please note that Klipper3D are very good about keeping [their online documentation](https://www.klipper3d.org/) up to date with their latest firmware.
 This repo, however, is NOT up-to-the-minute with every change they release.  That latency can mean that some of their online instructions do not work with this version of Klipper.  The documentation in this repo is, however, "frozen" at the most recent version of Klipper with which we have merged.  
