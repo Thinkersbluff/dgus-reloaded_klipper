@@ -21,22 +21,15 @@ This repository may also be very helpful to get you started with Klipper on the 
 Given both points 1 and 2 above, negotiating a common standard interface in both versions of DGUS-Reloaded was not a practical option.
 
 ## Is This Klipper Fork Using the latest Klipper3D/master version?
-Sort of...
-As of Jan 2023: 
-- the latest release of Klipper is 0.11.0, available 28 Nov 2022.
-- the Desuuuu fork was last updated with Klipper 0.10.0, available 29 Sept 2022.
-- On 25 Jan 2023, Thinkersbluff was able to update the Klipper in this fork to 0.11.0, by merging this repo with [another fork of Klipper3D/Master maintained by gbkwiatt](https://github.com/gbkwiatt/klipper)
+No
+As of 3 April 2024:
+- Thinkersbluff is no longer able to merge the updates into this repo, from [another fork of Klipper3D/Master maintained by gbkwiatt](https://github.com/gbkwiatt/klipper), without conflicts.
+- The pre-built klipper.bin files available here DO, however, do continue to work with the latest Klipper v0.12.0
+ 
+At some future release of Klipper, changes to the klipper.bin or Make Menuconfig functionality may no longer work with the pre-built klipper.bin files available here.
 
-Worst-case, however, this solution may someday be limited to exploiting [the features and capabilities of Klipper at the last release with which we were able to merge without conflict](https://github.com/Thinkersbluff/dgus-reloaded_klipper/blob/DGUS-ReloadedForCR6/docs/Releases.md). 
-e.g. At some future release of Klipper, changes to the klipper.bin or Make Menuconfig functionality may render non-functional the pre-built klipper.bin files available here.
-
-Unfortunately, Moonraker flags installations of this repo (e.g. by configuring KIAUH to install Klipper from this repo instead of from the Klipper3D/Master github) as being "Invalid". That means that either:  
-1. We have to keep merging this version with the Klipper3D/master repo and manually updating our systems, 
-OR 
-2. We need to be able to install DGUS-Reloaded (t5uid1) into the ~/klipper/klippy/extras folder and let Moonraker maintain our Klipper installation from the Klipper3D/master github.
-
-## Should I Install the Modified Klipper From This Repo?
-You certainly could, but I don't.  
+## Can I Install the Modified Klipper From This Repo?
+You certainly could, but I don't recommend it.  
 
 When I first created this repo, I did not yet know whether users of any particular motherboard would need to create their own klipper.bin file.  
 Now, we know that the same klipper.bin file works on all 3 of the Creality boards, and the firmware.bin file works on the BTT SKR CR6 board, so we do NOT need to install the modified Klipper files.  
@@ -44,22 +37,21 @@ Now, we know that the same klipper.bin file works on all 3 of the Creality board
 I have left the modified files here and have left documentation that describes how to install it, but I recommend that users instead follow the guidance in the next two sections.
 
 ## Can I Install the Latest Klipper from Klipper3D/master and STILL Use DGUS-Reloaded for CR6?
-Yes, you can!
+Yes, you can!  That is what I do, and I let Moonraker update it, regularly.
+As of Apil 2024, that still works.
 
-It is NOT actually necessary to use ALL of this modified Klipper, to make the DGUS-Reloaded display function work on your system.
-
-There are basically TWO modifications made to Klipper, in this repo:  
+You need only make these TWO modifications to a standard Klipper v0.12.0 installation, using the files available from this repo:  
 
 1. **The T5UID1 folder adds the DGUS-Reloaded Python scripts to the ~/klipper/klippy/extras folder of Klipper.**  
- The DGUS_Reloaded DWIN_SET application is programmed to interact with those scripts, to provide a User Interface (UI) on the stock DWIN TFT. You can just copy that folder to the ~/klipper/klippy/extras folder of ANY Klipper installation, you do  NOT need to clone this entire modified Klipper to your system.
+ The DGUS_Reloaded DWIN_SET application is programmed to interact with those scripts, to provide a User Interface (UI) on the stock DWIN TFT. You can just copy (e.g. SFTP) that folder to the ~/klipper/klippy/extras folder of ANY Klipper installation, you do  NOT need to clone this entire modified Klipper to your system.
 
 2. **Some of the Make Menuconfig files have also been modified, to enable you to build your own klipper.bin file.**  
+Since I have already built the klipper.bin files for your CR6 printer, you do NOT need to install the modified Klipper that would allow you to build your own.
+
 When Desuuuu created his fork, he set it up as a complete modified fork of Klipper, to enable a wide range of users  to build their own klipper.bin file. 
 I, on the other hand, am ONLY providing a working DGUS-Reloaded setup for ONE Creality printer family (CR6-MAX and SE.)  I have therefore already built, tested, and uploaded the klipper.bin files (One for each of the four motherboards designed to work with the CR6 printer).
 
-Since I have already built the klipper.bin files for your CR6 printer, you do NOT need to install the modified Klipper that would allow you to build your own.  
-
-If you do NOT install this modified Klipper, though, you will need to manually install the t5uid1 application into the ~klipper/klippy/extras folder on your Klipper host.  The following section tells you how to do that.
+NOTE: It is this file which may someday no longer be compatible with some future update of Klipper.  If you ever update your Klipper and find that the klipper.bin file no longer connects correctly, you will likely have to roll-back your Klipper and stop applying updates, OR stop using the CR6 stock interface.  I keep hoping that someone with Python programming chops will decide to figure out how to update the klipper.bin or Makefile before that day...  
 
 ## Guidelines for How to Install DGUS-Reloaded with the Latest Klipper
 Rather than install the full modified Klipper from this repository, with DGUS-Reloaded already installed, you can instead follow these instructions to first install the latest Klipper and then add the DGUS-Reloaded functionality.  That way, Moonraker will automatically maintain your Klipper installation.
