@@ -21,7 +21,7 @@ This repository may also be very helpful to get you started with Klipper on the 
 Given both points 1 and 2 above, negotiating a common standard interface in both versions of DGUS-Reloaded was not a practical option.
 
 ## Is This Klipper Fork Using the latest Klipper3D/master version?
-No
+No.  
 As of 3 April 2024:
 - Thinkersbluff is no longer able to merge the updates into this repo, from [another fork of Klipper3D/Master maintained by gbkwiatt](https://github.com/gbkwiatt/klipper), without conflicts.
 - The pre-built klipper.bin files available here DO, however, do continue to work with the latest Klipper v0.12.0
