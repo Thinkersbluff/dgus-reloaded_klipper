@@ -2,7 +2,7 @@ The CrealityMB_Klipper.bin file in this folder was made by using the following i
 
 $ cd klipper
 $ make menuconfig
-Select the settings shown in the screen image "Make Menuconfig for ERA or 4.5.3 or 4.5.2.jpg"
+Select the settings shown in the screen image "Make Menuconfig.jpg"
 Enter Q
 Enter Y
 $ make
