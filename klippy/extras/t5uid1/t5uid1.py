@@ -820,7 +820,7 @@ class T5UID1:
         # The remaining nine points are stored in the second word (0x3123)
         if self.bed_mesh is None:
             return 0
-        count = len(self.bed_mesh.bmc.probe_helper.results)
+        count = len(self.probe.probe_session.results)
         points_map = [ 0,  1,  2,  3,  4,
                        9,  8,  7,  6,  5,
                       10, 11, 12, 13, 14,
@@ -925,7 +925,7 @@ class T5UID1:
                 or idle_time < 1.0
                 or self.gcode.get_mutex().test()):
             return True
-        return (self.probe is not None and self.probe.multi_probe_pending)
+        return False
 
     def cmd_DGUS_ABORT_PAGE_SWITCH(self, gcmd):
         pass

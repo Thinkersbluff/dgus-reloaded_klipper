@@ -5,3 +5,5 @@ out
 .config.old
 klippy/.version
 test\*.*
+klippy/extras/t5uid1/Was/probe.py
+klippy/extras/t5uid1/Was/t5uid1.py
