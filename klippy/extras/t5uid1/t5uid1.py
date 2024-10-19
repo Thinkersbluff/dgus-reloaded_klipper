@@ -925,8 +925,8 @@ class T5UID1:
                 or idle_time < 1.0
                 or self.gcode.get_mutex().test()):
             return True
-        return False
-
+        # If there is a probe, and if the probe is currently performing multiple probes, return True, else return False
+        return (self.probe is not None and self.probe.probe_session.homing_helper.multi_probe_pending)
     def cmd_DGUS_ABORT_PAGE_SWITCH(self, gcmd):
         pass
 
