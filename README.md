@@ -38,7 +38,7 @@ I have left the modified files here and have left documentation that describes h
 
 ## Can I Install the Latest Klipper from Klipper3D/master and STILL Use DGUS-Reloaded for CR6?
 Yes, you can!  That is what I do, and I let Moonraker update it, regularly.
-As of Apil 2024, that still works.
+As of October 2024, that still works (as long as you are using v1.3.2 or higher of the Klipper component.)
 
 You need only make these TWO modifications to a standard Klipper v0.12.0 installation, using the files available from this repo:  
 
