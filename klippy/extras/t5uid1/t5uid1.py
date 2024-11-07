@@ -1,5 +1,6 @@
 """ Support for DGUS T5UID1 touchscreens"""
 #
+# NOTE: Original intent was to allow for DGUS-Reloaded to support multiple # screen types, not just T5UID1 screens#
 # Copyright (C) 2020  Desuuuu <contact@desuuuu.com>
 #
 # This file may be distributed under the terms of the GNU GPLv3 license.
