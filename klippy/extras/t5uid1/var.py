@@ -1,4 +1,4 @@
-# Variable class
+""" Define the T5UID1 Variable class """
 #
 # Copyright (C) 2020  Desuuuu <contact@desuuuu.com>
 #
@@ -22,6 +22,7 @@ TYPES_FMT = {
 }
 
 class T5UID1_Var:
+    """Define the T5UID1 variable types and processing functions"""
     def __init__(self, gcode_macro, input_context, output_context, config):
         self.printer = config.get_printer()
 
@@ -42,10 +43,10 @@ class T5UID1_Var:
         try:
             self.address = int(address, 16)
             if self.address < 0x1000 or self.address > 0xffff:
-                raise
-        except:
+                raise ValueError
+        except Exception as e:
             raise config.error("Invalid address '%s' in section '%s'"
-                               % (address, config.get_name()))
+                               % (address, config.get_name())) from e
 
         data_types = list(TYPES_LEN.keys())
         data_types.append('str')
@@ -82,8 +83,9 @@ class T5UID1_Var:
             self.run_as_gcode = False
 
     def data_received(self, data):
+        """Parse data received as bytearray"""
         if self.type != "input":
-            raise Exception("not an input")
+            raise TypeError("data_received not an input")
 
         context = self._template.create_template_context()
         context.update(self._context)
@@ -114,8 +116,9 @@ class T5UID1_Var:
             self.gcode.run_script_from_command(result)
 
     def prepare_data(self):
+        """Prepare data into bytearray for transmission"""
         if self.type != "output":
-            raise Exception("not an output")
+            raise TypeError("prepare_data not an output")
 
         context = self._template.create_template_context()
         context.update(self._context)
