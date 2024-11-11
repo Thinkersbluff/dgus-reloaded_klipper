@@ -195,6 +195,7 @@ class T5UID1:
         self._print_pause_time = -1
         self._print_end_time = -1
         self._print_time_remaining = 0
+        self._latest_rvalue = 0
         self._slicer_estimated_print_time = 0
         self._boot_page = self._timeout_page = self._shutdown_page = None
         self._t5uid1_ping_cmd = self._t5uid1_write_cmd = None
@@ -632,10 +633,11 @@ class T5UID1:
         # iff "eventtime"= "current_time"
         else:
             self._print_duration = eventtime - self._print_start_time
-
+        # Since the slicer estimated print time and the M73 R values are in minutes, not seconds, 
+        # compute _print_time_remaining in minutes
         self._print_time_remaining = self._slicer_estimated_print_time - self._print_duration/60
         if self._print_time_remaining < 0:
-            self._print_time_remaining = 0
+            self._print_time_remaining = self._latest_rvalue
             
         # update() the res dictionary based on the keys and current values declared
         # within the {} braces here:
@@ -1019,6 +1021,7 @@ class T5UID1:
             self._print_pause_time = -1
         self._print_end_time = curtime
         self._print_time_remaining = 0
+        self._latest_rvalue = 0
         self._slicer_estimated_print_time = 0
         self._is_printing = False
         if 'print_end' in self._routines:
@@ -1031,8 +1034,8 @@ class T5UID1:
             progress = gcmd.get_int('P', 0)
             self._print_progress = min(100, max(0, progress))
         if gcmd.get_int('R', 0):
-            remaining = gcmd.get_int('R', 0)
-            self._print_time_remaining = max(0, remaining)
+            self._latest_rvalue = gcmd.get_int('R', 0)
+            self._print_time_remaining = max(0, self._latest_rvalue)
         if self._original_M73 is not None:
             self._original_M73(gcmd)
 
