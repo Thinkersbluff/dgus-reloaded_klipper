@@ -22,9 +22,9 @@ Given both points 1 and 2 above, negotiating a common standard interface in both
 
 ## Is This Klipper Fork Using the latest Klipper3D/master version?
 No.  
-As of 3 April 2024:
+As of 11 Nov 2024:
 - Thinkersbluff is no longer able to merge the updates into this repo, from [another fork of Klipper3D/Master maintained by gbkwiatt](https://github.com/gbkwiatt/klipper), without conflicts.
-- The pre-built klipper.bin files available here DO, however, continue to work with the latest Klipper v0.12.0
+- The pre-built klipper.bin files available here DO, however, continue to work with Klipper as of v0.12.0-349-ga3403449
  
 At some future release of Klipper, changes to the klipper.bin or Make Menuconfig functionality may no longer work with the pre-built klipper.bin files available here.
 
