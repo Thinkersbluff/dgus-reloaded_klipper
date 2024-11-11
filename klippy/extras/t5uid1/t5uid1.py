@@ -194,6 +194,7 @@ class T5UID1:
         self._print_pause_time = -1
         self._print_end_time = -1
         self._print_time_remaining = 0
+        self._slicer_estimated_print_time = 0
         self._boot_page = self._timeout_page = self._shutdown_page = None
         self._t5uid1_ping_cmd = self._t5uid1_write_cmd = None
         self._is_connected = False
@@ -995,7 +996,9 @@ class T5UID1:
         self._print_start_time = self.reactor.monotonic()
         self._print_pause_time = -1
         self._print_end_time = -1
-        self._print_time_remaining = 0
+        if self._print_time_remaining > 0:
+            self._slicer_estimated_print_time = self._print_time_remaining
+        else: self._print_time_remaining = 0
         self._is_printing = True
         self.check_paused()
         if 'print_start' in self._routines:
