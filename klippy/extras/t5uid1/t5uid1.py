@@ -189,6 +189,7 @@ class T5UID1:
         self._pages = {}
         self._routines = {}
         self._is_printing = False
+        self._print_duration = 0
         self._print_progress = 0
         self._print_start_time = -1
         self._print_pause_time = -1
@@ -620,21 +621,22 @@ class T5UID1:
         """Update the values of the displayed printer status variables"""
         pages = { p: self._pages[p].id for p in self._pages }
         res = dict(self._status_data)
-        # Commented-out print duration calculations, troubleshooting M112 on Resumef
-        # Replaced with default - at worst will include time spent paused...
-        print_duration = self._print_end_time - self._print_start_time
         # Calculate the current value of print_duration, before performing the update routine
         # If finished printing, print duration = "time at finish" - "time at start"
-        # if not self._is_printing:
-        # print_duration = self._print_end_time - self._print_start_time
+        if not self._is_printing:
+            self._print_duration = self._print_end_time - self._print_start_time
         # If printing is paused, print duration = "time when paused" - "time at start"
-        # elif self._print_pause_time >= 0:
-        # print_duration = self._print_pause_time - self._print_start_time
+        elif self._print_pause_time >= 0:
+            self._print_duration = self._print_pause_time - self._print_start_time
         # If printing, print_duration = "current time" - "time at start",
         # iff "eventtime"= "current_time"
-        # else:
-        # print_duration = eventtime - self._print_start_time
+        else:
+            self._print_duration = eventtime - self._print_start_time
 
+        self._print_time_remaining = self._slicer_estimated_print_time - self._print_duration/60
+        if self._print_time_remaining < 0:
+            self._print_time_remaining = 0
+            
         # update() the res dictionary based on the keys and current values declared
         # within the {} braces here:
         res.update({
@@ -650,7 +652,7 @@ class T5UID1:
             'control_types': CONTROL_TYPES,
             'is_printing': self._is_printing,
             'print_progress': self._print_progress,
-            'print_duration': max(0, print_duration),
+            'print_duration': max(0, self._print_duration),
             'time_remaining': self._print_time_remaining
         })
         return res
@@ -1017,6 +1019,7 @@ class T5UID1:
             self._print_pause_time = -1
         self._print_end_time = curtime
         self._print_time_remaining = 0
+        self._slicer_estimated_print_time = 0
         self._is_printing = False
         if 'print_end' in self._routines:
             self.start_routine('print_end')
