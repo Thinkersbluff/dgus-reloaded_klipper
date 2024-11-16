@@ -12,9 +12,8 @@ import struct
 import textwrap
 import jinja2
 import mcu
-
+from . import var, page, routine, dgus_reloaded
 from .. import gcode_macro, heaters
-from . import dgus_reloaded, page, routine, var
 
 T5UID1_firmware_cfg = {
     'dgus_reloaded': dgus_reloaded.configuration
@@ -37,6 +36,8 @@ T5UID1_ADDR_CONTROL    = 0xb0
 TIMEOUT_SECS = 15
 CMD_DELAY = 0.02
 
+# Define the T5L control codes per the DWIN T5L Application Guide
+# for inclusion in the applicable messages transmitted to the TFT
 CONTROL_TYPES = {
     'variable_data_input': 0x00,
     'popup_window':        0x01,
@@ -77,7 +78,7 @@ def get_duration(secs):
     return " ".join(parts)
 
 def get_remaining(minutes):
-    """Exoress print time remaining, in Days, Hours, and Minutes."""
+    """Express print time remaining, in Days, Hours, and Minutes."""
     if not isinstance(minutes, int):
         minutes = int(minutes)
     if minutes < 0:
@@ -191,7 +192,7 @@ class T5UID1:
         self._is_printing = False
         self._print_duration = 0
         self._print_progress = 0
-        self._print_start_time = -1
+        self._print_start_time = 0
         self._print_pause_time = -1
         self._print_end_time = -1
         self._print_time_remaining = 0
@@ -200,6 +201,8 @@ class T5UID1:
         self._boot_page = self._timeout_page = self._shutdown_page = None
         self._t5uid1_ping_cmd = self._t5uid1_write_cmd = None
         self._is_connected = False
+        self._files = [None] * 5
+        self._sort_index = 0
 
         self._original_M73 = None
         self._original_M117 = None
@@ -227,18 +230,21 @@ class T5UID1:
             'heater_min_temp': self.heater_min_temp,
             'heater_max_temp': self.heater_max_temp,
             'heater_min_extrude_temp': self.heater_min_extrude_temp,
+            'capture_gcode_files': self.capture_gcode_files,
             'is_busy': self.is_busy
         })
 
         context_output = dict(global_context)
         context_output.update({
             'all_steppers_enabled': self.all_steppers_enabled,
+            '_files': self._files,
             'heater_min_temp': self.heater_min_temp,
             'heater_max_temp': self.heater_max_temp,
             'probed_matrix': self.probed_matrix,
             'pid_param': self.pid_param,
             'get_duration': get_duration,
-            'get_remaining': get_remaining
+            'get_remaining': get_remaining,
+            'specific_fpname': self.specific_fpname
         })
 
         context_routine = dict(global_context)
@@ -251,7 +257,8 @@ class T5UID1:
             'abort_page_switch': self.abort_page_switch,
             'full_update': self.full_update,
             'is_busy': self.is_busy,
-            'check_paused': self.check_paused
+            'check_paused': self.check_paused,
+            'capture_gcode_files': self.capture_gcode_files
         })
 
         self._status_data.update({
@@ -369,8 +376,7 @@ class T5UID1:
         cmd_queue = self.mcu.alloc_command_queue()
         self._t5uid1_ping_cmd = self.mcu.lookup_command("t5uid1_ping oid=%c", cq=cmd_queue)
         self._t5uid1_write_cmd = self.mcu.lookup_command(
-            "t5uid1_write oid=%c command=%c data=%*s", cq=cmd_queue
-        )
+            "t5uid1_write oid=%c command=%c data=%*s", cq=cmd_queue)
 
         self.mcu.register_response(self._handle_t5uid1_received, "t5uid1_received")
 
@@ -579,6 +585,41 @@ class T5UID1:
         """Read variable values into variables"""
         self._variable_data[name] = value
 
+# Before entering Print_Menu page, return path & name of all gcode files on Virtual SD Card into the set _files
+    def capture_gcode_files(self, directory):
+        self._files=[]
+        for root, dirs, filenames in os.walk(os.path.expanduser(directory)):
+            for filename in filenames:
+               if filename.endswith('.gcode'):
+                    self._files.append(os.path.join(root, filename))
+
+        # If fewer than 5 files were found, pad the rest of the _files list with 'None'
+        while len(self._files) < 5:
+            self._files.append(None)
+
+# Sort the files list by modification time, most recent file first 
+        self._files = sorted( 
+            [f for f in self._files if f is not None],
+            key=lambda x: os.path.getmtime(x),
+            reverse=True
+            ) + [None] * (5 - len([f for f in self._files if f is not None]))
+
+        return (self._files)
+
+    def specific_fpname(self, i, index): 
+        # Allow for scrolling up and down the list in increments of 1 position
+        # Manage the value of scroll_index as a variable in a vars_in.cfg script, in response to button-presses
+        try: 
+            if i + index < len(self._files):
+                if self._files[i + index] is not None:
+                    return self._files[i + index].split('/')[-1]
+                else:
+                    return None 
+            else: raise IndexError("Index out of range") 
+        except Exception as e:
+            logging.exception("Unhandled exception in specific_fpname: %s, %s, %s", i, index, str(e)) 
+            return None
+
     def check_paused(self):
         """Manage the printer if and while paused"""
         # If the printer is not printing a model, exit this process
@@ -636,6 +677,7 @@ class T5UID1:
         # Since the slicer estimated print time and the M73 R values are in minutes, not seconds, 
         # compute _print_time_remaining in minutes
         self._print_time_remaining = self._slicer_estimated_print_time - self._print_duration/60
+        # If_ slicer_estimated_print_time proves too low, revert to using the M73 R factor rather than displaying zero or negative times
         if self._print_time_remaining < 0:
             self._print_time_remaining = self._latest_rvalue
             
@@ -1000,9 +1042,12 @@ class T5UID1:
         self._print_start_time = self.reactor.monotonic()
         self._print_pause_time = -1
         self._print_end_time = -1
+
+        # If the gcode includes M73 R messages, then capture the first one as the slicer's estimated total print time
         if self._print_time_remaining > 0:
             self._slicer_estimated_print_time = self._print_time_remaining
         else: self._print_time_remaining = 0
+
         self._is_printing = True
         self.check_paused()
         if 'print_start' in self._routines:
