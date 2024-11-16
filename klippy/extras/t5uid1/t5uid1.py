@@ -1,11 +1,16 @@
-# Support for DGUS T5UID1 touchscreens
+""" Support for DGUS T5UID1 touchscreens"""
 #
+# NOTE: Design intent was one class per screen type
+
 # Copyright (C) 2020  Desuuuu <contact@desuuuu.com>
 #
 # This file may be distributed under the terms of the GNU GPLv3 license.
-import os, logging, struct, textwrap
+import logging
+import math# math library is not used. Consider removing this import.
+import os
+import struct
+import textwrap
 import jinja2
-import math
 import mcu
 from . import var, page, routine, dgus_reloaded
 from .. import gcode_macro, heaters
@@ -31,6 +36,8 @@ T5UID1_ADDR_CONTROL    = 0xb0
 TIMEOUT_SECS = 15
 CMD_DELAY = 0.02
 
+# Define the T5L control codes per the DWIN T5L Application Guide
+# for inclusion in the applicable messages transmitted to the TFT
 CONTROL_TYPES = {
     'variable_data_input': 0x00,
     'popup_window':        0x01,
@@ -43,71 +50,77 @@ CONTROL_TYPES = {
 }
 
 def map_value_range(x, in_min, in_max, out_min, out_max):
+    """Function to map an input value to an output value"""
     return int(round((x - in_min)
                      * (out_max - out_min)
                      // (in_max - in_min)
                      + out_min))
-
 def get_duration(secs):
-    if type(secs) is not int:
-       secs = int(secs)
+    """Build string variable reporting 'printtime so far' in days, hours, minutes, and seconds."""
+    if not isinstance(secs, int):
+        secs = int(secs)
     if secs < 0:
-       secs = 0
-    mins = secs // 60
-    hrs = mins // 60
-    dys = hrs // 24
+        secs = 0
+
+    mins, secs = divmod(secs, 60)
+    hrs, mins = divmod(mins, 60)
+    dys, hrs = divmod(hrs, 24)
     dys %= 365
-    hrs %= 24
-    mins %= 60
-    secs %= 60
-    result = "%ss" % (secs,)
-    if mins:
-       result = "%sm" % (mins,) + " " + result
-    if hrs:
-       result = "%sh" % (hrs,) + " " + result
+
+    parts = []
     if dys:
-       result = "%sd" % (dys,) + " " + result
-    return result
+        parts.append(f"{dys}d")
+    if hrs:
+        parts.append(f"{hrs}h")
+    if mins:
+        parts.append(f"{mins}m")
+    parts.append(f"{secs}s")
+    return " ".join(parts)
 
 def get_remaining(minutes):
-    if type(minutes) is not int:
+    """Express print time remaining, in Days, Hours, and Minutes."""
+    if not isinstance(minutes, int):
         minutes = int(minutes)
     if minutes < 0:
         minutes = 0
-    hours = minutes // 60
-    days = hours // 24
+
+    hours, minutes = divmod(minutes, 60)
+    days, hours = divmod(hours, 24)
     days %= 365
-    hours %= 24
-    minutes %= 60
-    result = str(minutes) + "m"
-    if hours:
-        result = str(hours) + "h " + result
+
+    parts = []
     if days:
-        result = str(days) + "d " + result
-    return result
+        parts.append(f"{days}d")
+    if hours:
+        parts.append(f"{hours}h")
+    parts.append(f"{minutes}m")
+    return " ".join(parts)
 
 def bitwise_and(lhs, rhs):
+    """Perform bitwise AND"""
     return lhs & rhs
 
 def bitwise_or(lhs, rhs):
+    """Perform bitwise OR"""
     return lhs | rhs
 
 class T5UID1GCodeMacro:
+    """A Class for wrapping a gcode macro into a jinja2 template?"""
     def __init__(self, config):
         self.printer = config.get_printer()
         self.env = jinja2.Environment('{%', '%}', '{', '}',
                                       trim_blocks=True,
                                       lstrip_blocks=True,
                                       extensions=['jinja2.ext.do'])
+
     def load_template(self, config, option, default=None):
-        name = "%s:%s" % (config.get_name(), option)
-        if default is None:
-            script = config.get(option)
-        else:
-            script = config.get(option, default)
+        """Load applicable jinja2 template"""
+        name = f"{config.get_name()}:{option}"
+        script = config.get(option, default) if default is not None else config.get(option)
         return gcode_macro.TemplateWrapper(self.printer, self.env, name, script)
 
 class T5UID1:
+    """Defines one instance of the t5uid1 class as a unique set of parameters/attributes"""
     def __init__(self, config):
         self.printer = config.get_printer()
         self.name = config.get_name()
@@ -177,14 +190,19 @@ class T5UID1:
         self._pages = {}
         self._routines = {}
         self._is_printing = False
+        self._print_duration = 0
         self._print_progress = 0
-        self._print_start_time = -1
+        self._print_start_time = 0
         self._print_pause_time = -1
         self._print_end_time = -1
         self._print_time_remaining = 0
+        self._latest_rvalue = 0
+        self._slicer_estimated_print_time = 0
         self._boot_page = self._timeout_page = self._shutdown_page = None
         self._t5uid1_ping_cmd = self._t5uid1_write_cmd = None
         self._is_connected = False
+        self._files = [None] * 5
+        self._sort_index = 0
 
         self._original_M73 = None
         self._original_M117 = None
@@ -212,18 +230,21 @@ class T5UID1:
             'heater_min_temp': self.heater_min_temp,
             'heater_max_temp': self.heater_max_temp,
             'heater_min_extrude_temp': self.heater_min_extrude_temp,
+            'capture_gcode_files': self.capture_gcode_files,
             'is_busy': self.is_busy
         })
 
         context_output = dict(global_context)
         context_output.update({
             'all_steppers_enabled': self.all_steppers_enabled,
+            '_files': self._files,
             'heater_min_temp': self.heater_min_temp,
             'heater_max_temp': self.heater_max_temp,
             'probed_matrix': self.probed_matrix,
             'pid_param': self.pid_param,
             'get_duration': get_duration,
-            'get_remaining': get_remaining
+            'get_remaining': get_remaining,
+            'specific_fpname': self.specific_fpname
         })
 
         context_routine = dict(global_context)
@@ -236,7 +257,8 @@ class T5UID1:
             'abort_page_switch': self.abort_page_switch,
             'full_update': self.full_update,
             'is_busy': self.is_busy,
-            'check_paused': self.check_paused
+            'check_paused': self.check_paused,
+            'capture_gcode_files': self.capture_gcode_files
         })
 
         self._status_data.update({
@@ -280,7 +302,7 @@ class T5UID1:
                                             self._handle_disconnect)
 
     def _load_config(self, config, fnames, ctx_in, ctx_out, ctx_routine):
-        if type(fnames) is not list:
+        if not isinstance(fnames, list):
             fnames = [fnames]
         v_list = config.get_prefix_sections('t5uid1_var ')
         v_main_names = { c.get_name(): 1 for c in v_list }
@@ -294,9 +316,8 @@ class T5UID1:
                                     fname)
             try:
                 dconfig = self.configfile.read_config(filepath)
-            except Exception:
-                raise self.printer.config_error("Cannot load config '%s'"
-                                                % (filepath,))
+            except Exception as e:
+                raise self.printer.config_error(f"Cannot load config '{filepath}'") from e
             v_list += [c for c in dconfig.get_prefix_sections('t5uid1_var ')
                        if c.get_name() not in v_main_names]
             p_list += [c for c in dconfig.get_prefix_sections('t5uid1_page ')
@@ -309,65 +330,55 @@ class T5UID1:
                                ctx_out,
                                c)
             if v.name in self._vars:
-                raise self.printer.config_error("t5uid1_var '%s' already"
-                                                " exists" % (v.name,))
+                raise self.printer.config_error(f"t5uid1_var '{v.name}' already exists")
             self._vars[v.name] = v
         for c in p_list:
             p = page.T5UID1_Page(self._vars.keys(), c)
             if p.name in self._pages:
-                raise self.printer.config_error("t5uid1_page '%s' already"
-                                                " exists" % (p.name,))
+                raise self.printer.config_error(f"t5uid1_page '{p.name}' already exists")
             self._pages[p.name] = p
             if p.is_boot:
                 if self._boot_page is None:
                     self._boot_page = p.name
                 else:
-                    raise self.printer.config_error("Multiple boot pages"
-                                                    " found")
+                    raise self.printer.config_error("Multiple boot pages found")
             if p.is_timeout:
                 if self._timeout_page is None:
                     self._timeout_page = p.name
                 else:
-                    raise self.printer.config_error("Multiple timeout pages"
-                                                    " found")
+                    raise self.printer.config_error("Multiple timeout pages found")
             if p.is_shutdown:
                 if self._shutdown_page is None:
                     self._shutdown_page = p.name
                 else:
-                    raise self.printer.config_error("Multiple shutdown pages"
-                                                    " found")
+                    raise self.printer.config_error("Multiple shutdown pages found")
         for c in r_list:
             r = routine.T5UID1_Routine(self._gcode_macro,
                                        ctx_routine,
                                        self._pages.keys(),
                                        c)
             if r.name in self._routines:
-                raise self.printer.config_error("t5uid1_routine '%s' already"
-                                                " exists" % (r.name,))
+                raise self.printer.config_error(f"t5uid1_routine '{r.name}' already exists")
             self._routines[r.name] = r
 
     def _build_config(self):
-        timeout_command, timeout_data = self.switch_page(self._timeout_page,
-                                                           send=False)
-        timeout_data = "".join(["%02x" % (x,) for x in timeout_data])
+        timeout_command, timeout_data = self.switch_page(self._timeout_page, send=False)
+        timeout_data = "".join(f"{x:02x}" for x in timeout_data)
 
         self.mcu.add_config_cmd(
-            "config_t5uid1 oid=%d baud=%d timeout=%d"
-            " timeout_command=%d timeout_data=%s"
-            % (self.oid, self._baud, TIMEOUT_SECS,
-               timeout_command, timeout_data))
+            f"config_t5uid1 oid={self.oid} baud={self._baud} timeout={TIMEOUT_SECS}"
+            f" timeout_command={timeout_command} timeout_data={timeout_data}"
+        )
 
         curtime = self.reactor.monotonic()
         self._last_cmd_time = self.mcu.estimated_print_time(curtime)
 
         cmd_queue = self.mcu.alloc_command_queue()
-        self._t5uid1_ping_cmd = self.mcu.lookup_command(
-            "t5uid1_ping oid=%c", cq=cmd_queue)
+        self._t5uid1_ping_cmd = self.mcu.lookup_command("t5uid1_ping oid=%c", cq=cmd_queue)
         self._t5uid1_write_cmd = self.mcu.lookup_command(
             "t5uid1_write oid=%c command=%c data=%*s", cq=cmd_queue)
 
-        self.mcu.register_response(self._handle_t5uid1_received,
-                                   "t5uid1_received")
+        self.mcu.register_response(self._handle_t5uid1_received, "t5uid1_received")
 
     def _handle_ready(self):
         self.toolhead = self.printer.lookup_object('toolhead')
@@ -466,6 +477,7 @@ class T5UID1:
             (lambda e, s=self, a=address, d=data: s.handle_received(a, d)))
 
     def handle_received(self, address, data):
+        """A function to parse messages received from DWIN_SET"""
         if not self._is_connected:
             return
         if address == T5UID1_ADDR_VERSION and len(data) == 2:
@@ -488,24 +500,27 @@ class T5UID1:
                          hex(address))
 
     def send_var(self, name):
+        """Build and send message to DWIN_SET (but abort and flag unknown messages)"""
         if name not in self._vars:
-            raise Exception("T5UID1_Var '%s' not found" % (name,))
-        return self.t5uid1_command_write(self._vars[name].address,
-                                         self._vars[name].prepare_data())
+            raise ValueError(f"T5UID1_Var '{name}' not found")
+        var_obj = self._vars[name]
+        return self.t5uid1_command_write(var_obj.address, var_obj.prepare_data())
 
     def page_name(self, page_id):
-        if type(page_id) is not int:
+        """Build string variable 'name' containing name of page corresponding to page number"""
+        if not isinstance(page_id, int):
             page_id = int(page_id)
         for name in self._pages:
             if self._pages[name].id == page_id:
                 return name
-        raise Exception("T5UID1_Page %d not found" % (page_id,))
+        raise ValueError(f"T5UID1_Page {page_id} not found")
 
     def send_page_vars(self, page=None, complete=False):
+        """Update the applicable variables defined in pages.cfg for the current page"""
         if page is None:
             page = self._current_page
         if page not in self._pages:
-            raise Exception("T5UID1_Page '%s' not found" % (page,))
+            raise ValueError(f"T5UID1_Page '{page}' not found")
         if complete:
             for var_name in self._pages[page].var:
                 self.send_var(var_name)
@@ -513,108 +528,161 @@ class T5UID1:
             self.send_var(var_name)
 
     def full_update(self):
+        """Refresh all data on current page. Reset update_timer."""
         self.send_page_vars(complete=True)
         self.reactor.update_timer(self._update_timer,
                                   self.reactor.monotonic()
                                       + self._update_interval)
 
     def start_routine(self, routine):
+        """Launch called routine. Abort and raise error if cannot"""
         if routine not in self._routines:
-            raise Exception("T5UID1_Routine '%s' not found" % (routine,))
+            raise ValueError(f"T5UID1_Routine '{routine}' not found")
         if self._routines[routine].trigger != "manual":
-            raise Exception("T5UID1_Routine '%s' cannot be started manually"
-                            % (routine,))
+            raise ValueError(f"T5UID1_Routine '{routine}' cannot be started manually")
         self._routines[routine].run()
 
     def stop_routine(self, routine):
+        """Abort and flag attempt to process an undefined/deprecated routine"""
         if routine not in self._routines:
-            raise Exception("T5UID1_Routine '%s' not found" % (routine,))
+            raise ValueError(f"T5UID1_Routine '{routine}' not found")
         self._routines[routine].stop()
 
     def _start_page_routines(self, page, trigger):
         if page not in self._pages:
-            raise Exception("T5UID1_Page '%s' not found" % (page,))
+            raise ValueError(f"T5UID1_Page '{page}' not found")
         results = []
-        for routine in self._routines:
-            if (self._routines[routine].page != page
-                or self._routines[routine].trigger != trigger):
-                continue
-            result = self._routines[routine].run()
-            if result is not None:
-                results.append(result)
-        return all(results)
+        results = [
+            self._routines[routine].run()
+            for routine in self._routines
+            if self._routines[routine].page == page
+            and self._routines[routine].trigger == trigger
+        ]
+        return all(result is not None for result in results)
 
     def _stop_page_routines(self, page):
         if page not in self._pages:
-            raise Exception("T5UID1_Page '%s' not found" % (page,))
+            raise ValueError(f"T5UID1_Page '{page}' not found")
         for routine in self._routines:
-            if self._routines[routine].page != page:
-                continue
-            self._routines[routine].stop()
+            if self._routines[routine].page == page:
+                self._routines[routine].stop()
 
-    class sentinel: pass
+
+    class sentinel:
+        """Defines sentinel as no-op class"""
+        pass
 
     def get_variable(self, name, default=sentinel):
+        """Return value of named variable. Raise error if name not recognized"""
         if name not in self._variable_data:
             if default is not self.sentinel:
                 return default
-            raise Exception("Variable '%s' not found" % (name,))
+            raise ValueError(f"Variable '{name}' not found")
+
         return self._variable_data[name]
 
     def set_variable(self, name, value):
+        """Read variable values into variables"""
         self._variable_data[name] = value
 
+# Before entering Print_Menu page, return path & name of all gcode files on Virtual SD Card into the set _files
+    def capture_gcode_files(self, directory):
+        self._files=[]
+        for root, dirs, filenames in os.walk(os.path.expanduser(directory)):
+            for filename in filenames:
+               if filename.endswith('.gcode'):
+                    self._files.append(os.path.join(root, filename))
+
+        # If fewer than 5 files were found, pad the rest of the _files list with 'None'
+        while len(self._files) < 5:
+            self._files.append(None)
+
+# Sort the files list by modification time, most recent file first 
+        self._files = sorted( 
+            [f for f in self._files if f is not None],
+            key=lambda x: os.path.getmtime(x),
+            reverse=True
+            ) + [None] * (5 - len([f for f in self._files if f is not None]))
+
+        return (self._files)
+
+    def specific_fpname(self, i, index): 
+        # Allow for scrolling up and down the list in increments of 1 position
+        # Manage the value of scroll_index as a variable in a vars_in.cfg script, in response to button-presses
+        try: 
+            if i + index < len(self._files):
+                if self._files[i + index] is not None:
+                    return self._files[i + index].split('/')[-1]
+                else:
+                    return None 
+            else: raise IndexError("Index out of range") 
+        except Exception as e:
+            logging.exception("Unhandled exception in specific_fpname: %s, %s, %s", i, index, str(e)) 
+            return None
+
     def check_paused(self):
+        """Manage the printer if and while paused"""
         # If the printer is not printing a model, exit this process
         if not self._is_printing:
             return
-        # If the printer is not paused, exit this process - disabled because prevents processing resume action
+        # Next two lines are disabled. They prevent processing resume action
         # if not self.pause_resume.is_paused:
         #    return
-        # If the printer has resumed printing but the print_paused page is still displayed, assume the printer has been resumed by a RESUME macro
-        # and restore the displayed page to "print_status"
+        # If the printer has resumed printing but the print_paused page is still displayed:
+            # assume the printer has been resumed by a RESUME macro
+            # and restore the displayed page to "print_status"
         if self._current_page == "print_paused" and not self.pause_resume.is_paused:
             self.switch_page("print_status")
             self._current_page = "print_status"
-        # If the printer is paused but the displayed page is still "print_status", assume the printer has been paused by Klipper
-        # e.g. M600 or PAUSE macros) and change the display page to "print_paused".
+        # If the printer is paused but the displayed page is still "print_status":
+            # assume the printer has been paused by Klipper (e.g. M600 or PAUSE macros)
+            # and change the display page to "print_paused".
         if self._current_page == "print_status" and self.pause_resume.is_paused:
             self.switch_page("print_paused")
             self._current_page = "print_paused"
-        # Keep track of the amount of time spent paused (i.e. "time not printing") 
-        # to be able to subtract that from the total at the end of the job, as follows:        
+        # Keep track of the amount of time spent paused (i.e. "time not printing")
+        # to be able to subtract that from the total at the end of the job, as follows:
         # Step 1: set the variable curtime to the value of "time now"
         curtime = self.reactor.monotonic()
-        # Step 2: If this is the first iteration of check_paused since the printer was paused, set the value of self._print_pause_time to "time now"
+        # Step 2: If this is the first iteration of check_paused since the printer was paused,
+        # set the value of self._print_pause_time to "time now"
         if self._print_pause_time < 0 and self.pause_resume.is_paused:
             self._print_pause_time = curtime
-        # Step 4: When the printer is resumed add the total amount of time that the printer was paused to the print start time, 
-        # so that the total time printed (calculcated as "end time" - "start time") will not include that amount of time
-        #if pause_duration > 0:
+        # Step 4: When the printer is resumed add the total amount of time
+        # that the printer was paused to the print start time,
+        # so that the total time printed (calculated as "end time" - "start time")
+        # will not include that time if pause_duration > 0:
         if self._print_pause_time >= 0 and not self.pause_resume.is_paused:
             pause_duration = curtime - self._print_pause_time
             self._print_start_time += pause_duration
-            # Now reset the trigger so that if the current print is pause again, the above process will also  measure the new print paused time.
+            # Now reset the trigger so that if the current print is paused again,
+            # the above process will also  measure the new print paused time.
             self._print_pause_time = -1
 
     def get_status(self, eventtime):
+        """Update the values of the displayed printer status variables"""
         pages = { p: self._pages[p].id for p in self._pages }
         res = dict(self._status_data)
-        # Commented-out print duration calculations, troubleshooting M112 on Resumef
-        # Replaced with default - at worst will include time spent paused...
-        print_duration = self._print_end_time - self._print_start_time 
-    # Calculate the current value of print_duration, before performing the update routine
+        # Calculate the current value of print_duration, before performing the update routine
         # If finished printing, print duration = "time at finish" - "time at start"
-        #if not self._is_printing:
-        #    print_duration = self._print_end_time - self._print_start_time 
+        if not self._is_printing:
+            self._print_duration = self._print_end_time - self._print_start_time
         # If printing is paused, print duration = "time when paused" - "time at start"
-        # elif self._print_pause_time >= 0:
-        #    print_duration = self._print_pause_time - self._print_start_time
-        # If printing, print_duration = "current time" - "time at start", iff "eventtime"= "current_time"
-        #else:
-        #    print_duration = eventtime - self._print_start_time
-
-        # update() the res dictionary based on the  keys and current values declared within the {} braces here:
+        elif self._print_pause_time >= 0:
+            self._print_duration = self._print_pause_time - self._print_start_time
+        # If printing, print_duration = "current time" - "time at start",
+        # iff "eventtime"= "current_time"
+        else:
+            self._print_duration = eventtime - self._print_start_time
+        # Since the slicer estimated print time and the M73 R values are in minutes, not seconds, 
+        # compute _print_time_remaining in minutes
+        self._print_time_remaining = self._slicer_estimated_print_time - self._print_duration/60
+        # If_ slicer_estimated_print_time proves too low, revert to using the M73 R factor rather than displaying zero or negative times
+        if self._print_time_remaining < 0:
+            self._print_time_remaining = self._latest_rvalue
+            
+        # update() the res dictionary based on the keys and current values declared
+        # within the {} braces here:
         res.update({
             'version': self._version,
             'machine_name': self._machine_name,
@@ -628,7 +696,7 @@ class T5UID1:
             'control_types': CONTROL_TYPES,
             'is_printing': self._is_printing,
             'print_progress': self._print_progress,
-            'print_duration': max(0, print_duration),
+            'print_duration': max(0, self._print_duration),
             'time_remaining': self._print_time_remaining
         })
         return res
@@ -636,7 +704,8 @@ class T5UID1:
     def _send_update(self, eventtime):
         if not self._is_connected or not self._current_page:
             return self.reactor.NEVER
-        try:# Try updating the var_auto variables on the current page
+        try:
+            # Try updating the var_auto variables on the current page
             self.send_page_vars(self._current_page, complete=False)
         except Exception as e:
             logging.exception("Unhandled exception in update timer: %s", str(e))
@@ -667,9 +736,10 @@ class T5UID1:
                                       curtime + TIMEOUT_SECS - 2)
 
     def t5uid1_command_write(self, address, data, send=True):
+        """Build message to send to DWIN_SET. Flag if invalid address or data"""
         if address < 0 or address > 0xffff:
             raise ValueError("invalid address")
-        if type(data) is not bytearray:
+        if not isinstance(data, bytearray):
             raise ValueError("invalid data")
         if len(data) < 1 or len(data) > 64 or len(data) % 2 != 0:
             raise ValueError("invalid data length")
@@ -681,6 +751,7 @@ class T5UID1:
         self._t5uid1_write(command, command_data)
 
     def t5uid1_command_read(self, address, wlen, send=True):
+        """Parse message received from DWIN_SET. Flag if not valid content"""
         if address < 0 or address > 0xffff:
             raise ValueError("invalid address")
         if wlen < 1 or wlen > 0x7d:
@@ -692,6 +763,7 @@ class T5UID1:
         self._t5uid1_write(command, command_data)
 
     def switch_page(self, name, send=True):
+        """Switch to named page. Flag if page name not known"""
         if name not in self._pages:
             raise ValueError("invalid page")
         if not send:
@@ -722,9 +794,11 @@ class T5UID1:
                                       + self._update_interval)
 
     def abort_page_switch(self):
+        """Send message to calling routine, if abort page switch"""
         return "DGUS_ABORT_PAGE_SWITCH"
 
     def play_sound(self, start, slen=1, volume=-1, send=True):
+        """Play sound defined by the calling function."""
         if start < 0 or start > 255:
             raise ValueError("invalid start")
         if slen < 1 or slen > 255:
@@ -739,6 +813,7 @@ class T5UID1:
                                          send)
 
     def enable_control(self, page, ctype, control, send=True):
+        """Build and send a message to DWIN_SET to enable a control"""
         if page < 0 or page > 255:
             raise ValueError("invalid page")
         if ctype < 0 or ctype > 255:
@@ -753,6 +828,7 @@ class T5UID1:
                                          send)
 
     def disable_control(self, page, ctype, control, send=True):
+        """Build and send a message to DWIN_SET to disable a control"""
         if page < 0 or page > 255:
             raise ValueError("invalid page")
         if ctype < 0 or ctype > 255:
@@ -767,6 +843,7 @@ class T5UID1:
                                          send)
 
     def set_brightness(self, brightness, send=True):
+        """Build and send a message to DWIN_SET to set the display brightness"""
         if brightness < 0 or brightness > 100:
             raise ValueError("invalid brightness")
         val = map_value_range(brightness, 0, 100, 5, 100)
@@ -780,6 +857,7 @@ class T5UID1:
             self.configfile.set(self.name, 'brightness', brightness)
 
     def set_volume(self, volume, send=True):
+        """Build and send a message to DWIN_SET to set the display speaker volume"""
         if volume < 0 or volume > 100:
             raise ValueError("invalid volume")
         val = map_value_range(volume, 0, 100, 0, 255)
@@ -793,28 +871,32 @@ class T5UID1:
             self.configfile.set(self.name, 'volume', volume)
 
     def all_steppers_enabled(self):
+        """Return which of the three steppers is/are enabled"""
         res = True
         for name in ['stepper_x', 'stepper_y', 'stepper_z']:
             res &= self.stepper_enable.lookup_enable(name).is_motor_enabled()
         return res
 
     def heater_min_temp(self, heater):
+        """Read value of min_temp in heaters.py for specified heater"""
         try:
             return self.heaters.lookup_heater(heater).min_temp
         except Exception:
             return 0
 
     def heater_max_temp(self, heater, margin=0):
+        """Read value of max_temp in heaters.py for specified heater"""
         try:
             return max(0, self.heaters.lookup_heater(heater).max_temp - margin)
         except Exception:
             return 0
 
     def heater_min_extrude_temp(self, heater):
+        """Return minimum extrusion temperature"""
         return self.heaters.lookup_heater(heater).min_extrude_temp
 
     def probed_matrix(self):
-        # This routine draws a checkmark at each probed point, as the ABL process executes
+        """ Draw a checkmark at each probed point, as the ABL process executes"""
         # In the DWIN_SET app, the total matrix requires two full words to describe the 25 points
         # The first 16 points are stored in the first word (0x3122)
         # The remaining nine points are stored in the second word (0x3123)
@@ -827,7 +909,8 @@ class T5UID1:
                       19, 18, 17, 16, 15,
                       20, 21, 22, 23, 24]
         res = 0
-        # This process re-draws the probed_matrix map, based on how many points have been probed so far
+        # This process re-draws the probed_matrix map,
+        # based on how many points have been probed so far
         for i in range(25):
             if count > points_map[i]:
                 if i < 16:
@@ -837,6 +920,7 @@ class T5UID1:
         return res
 
     def pid_param(self, heater, param):
+        """Load the PID parameter values"""
         if param not in ['p', 'i', 'd']:
             raise ValueError("Invalid param")
         try:
@@ -846,7 +930,8 @@ class T5UID1:
             logging.exception("Unhandled exception in t5uid1.pid_param: %s", str(e))
             return 0
 
-    def limit_extrude(self, extruder, val):  # make sure the filament_length value does not exceed the max_extrude_only_distance in printer.cfg
+    def limit_extrude(self, extruder, val):
+        """ Ensure filament_length value !> max_extrude_only_distance in printer.cfg"""
         logging.exception("Entering t5uid1.limit_extrude with val = : %s", str(val))
         try:
             if extruder in self.extruders:
@@ -855,15 +940,17 @@ class T5UID1:
                 ex = self.printer.lookup_object('extruder')
                 res = ex.max_e_dist
                 self.extruders[extruder] = ex
-            # If entered value (val) > max_extrude_only_distance (res), then limit filament_length entry to the value of res
+            # If entered value (val) > max_extrude_only_distance (res),
+            # then limit filament_length entry to the value of res
             return min(res, val)
-        # NOTE: Seems to have started failing after upgrading python on test printer to 3.11.1, from 3.9
+        # NOTE: Started failing when upgraded python on test printer to 3.11.1, from 3.9
         # Now returning zero on test printer. Does not return 140, so assume no exception above...
         except Exception as e:
             logging.exception("Unhandled exception in t5uid1.limit_extrude: %s", str(e))
             return 140
 
     def limits(self):
+        """Load the printer kinematics variable values"""
         kin = self.toolhead.get_kinematics()
         x_min, x_max = kin.rails[0].get_range()
         y_min, y_max = kin.rails[1].get_range()
@@ -910,6 +997,7 @@ class T5UID1:
         }
 
     def set_message(self, message):
+        """Set or clear the string value of the message on the display"""
         self.set_variable('message', message.strip())
         if 'message' in self._vars:
             self.send_var('message')
@@ -917,6 +1005,7 @@ class T5UID1:
             self.start_routine('message_timeout')
 
     def is_busy(self):
+        """Return whether the printer is too busy to process a command"""
         eventtime = self.reactor.monotonic()
         print_time, est_print_time, lookahead_empty = self.toolhead.check_busy(
             eventtime)
@@ -925,12 +1014,15 @@ class T5UID1:
                 or idle_time < 1.0
                 or self.gcode.get_mutex().test()):
             return True
-        # If there is a probe, and if the probe is currently performing multiple probes, return True, else return False
+        # If there is a probe, and if the probe is currently performing multiple probes,
+        # return True, else return False
         return (self.probe is not None and self.probe.probe_session.homing_helper.multi_probe_pending)
     def cmd_DGUS_ABORT_PAGE_SWITCH(self, gcmd):
+        """define abort_page_switch as a no-op function"""
         pass
 
     def cmd_DGUS_PLAY_SOUND(self, gcmd):
+        """Play Sound gcode handler"""
         if self._notification_sound >= 0:
             start = gcmd.get_int('START', self._notification_sound,
                                  minval=0, maxval=255)
@@ -942,21 +1034,27 @@ class T5UID1:
             self.play_sound(start, slen, volume)
         except Exception as e:
             raise gcmd.error(str(e))
-        gcmd.respond_info("Playing sound %d (len=%d, volume=%d)"
-                          % (start, slen, volume))
+        gcmd.respond_info(f"Playing sound {start} (len={slen}, volume={volume})")
 
     def cmd_DGUS_PRINT_START(self, gcmd):
+        """DGUS_Print_Start gcode handler"""
         self._print_progress = 0
         self._print_start_time = self.reactor.monotonic()
         self._print_pause_time = -1
         self._print_end_time = -1
-        self._print_time_remaining = 0
+
+        # If the gcode includes M73 R messages, then capture the first one as the slicer's estimated total print time
+        if self._print_time_remaining > 0:
+            self._slicer_estimated_print_time = self._print_time_remaining
+        else: self._print_time_remaining = 0
+
         self._is_printing = True
         self.check_paused()
         if 'print_start' in self._routines:
             self.start_routine('print_start')
 
     def cmd_DGUS_PRINT_END(self, gcmd):
+        """DGUS_Print_End gcode handler"""
         if not self._is_printing:
             return
         self._print_progress = 100
@@ -968,22 +1066,26 @@ class T5UID1:
             self._print_pause_time = -1
         self._print_end_time = curtime
         self._print_time_remaining = 0
+        self._latest_rvalue = 0
+        self._slicer_estimated_print_time = 0
         self._is_printing = False
         if 'print_end' in self._routines:
             self.start_routine('print_end')
 
     def cmd_M73(self, gcmd):
-        # The message may be M3 P_ R_ or M73 P_ or M73 R_
+        """Custom M73 function"""
+        # The message format may be M73 P_ R_ or M73 P_ or M73 R_
         if gcmd.get_int('P', 0):
             progress = gcmd.get_int('P', 0)
             self._print_progress = min(100, max(0, progress))
         if gcmd.get_int('R', 0):
-            remaining = gcmd.get_int('R', 0)
-            self._print_time_remaining = max(0, remaining)
+            self._latest_rvalue = gcmd.get_int('R', 0)
+            self._print_time_remaining = max(0, self._latest_rvalue)
         if self._original_M73 is not None:
             self._original_M73(gcmd)
 
     def cmd_M117(self, gcmd):
+        """Custom M117 function"""
         msg = gcmd.get_commandline()
         umsg = msg.upper()
         if not umsg.startswith('M117'):
@@ -998,6 +1100,7 @@ class T5UID1:
             self._original_M117(gcmd)
 
     def cmd_M300(self, gcmd):
+        """Custom M300 function"""
         if self._notification_sound >= 0:
             start = gcmd.get_int('S', self._notification_sound)
         else:
@@ -1012,4 +1115,5 @@ class T5UID1:
             raise gcmd.error(str(e))
 
 def load_config(config):
+    """Load the DGUS-Reloaded.cfg file settings into this instance of T5UID1"""
     return T5UID1(config)

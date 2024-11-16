@@ -79,6 +79,9 @@ constants = {
     'disabled':           0,
     'enabled':            1,
 
+    'scroll_up':    0,
+    'scroll_down':  1,
+
     'status_icon_pause':  1 << 0,
     'status_icon_resume': 1 << 1,
 
