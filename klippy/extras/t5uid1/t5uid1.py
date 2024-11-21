@@ -624,13 +624,13 @@ class T5UID1:
     def delete_file(self, index):
             self._scroll_index = index
             try: # Find the file path in _files based on the index + _scroll_index 
-                file_path = self._files[2 + self._scroll_index] 
+                file_path = self._files[self._scroll_index] 
                 if file_path is not None: 
                     # Delete the file
                     os.remove(file_path)
                     logging.info(f"Deleted file: {file_path}") 
                     # Update the _files list 
-                    self._files[2 + self._scroll_index] = None 
+                    self._files[self._scroll_index] = None 
                 else: logging.warning("No file to delete at the specified index.") 
             except Exception as e: 
                 logging.exception("Failed to delete file at index %s: %s", index, str(e))
