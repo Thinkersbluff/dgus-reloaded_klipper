@@ -231,6 +231,7 @@ class T5UID1:
             'heater_max_temp': self.heater_max_temp,
             'heater_min_extrude_temp': self.heater_min_extrude_temp,
             'capture_gcode_files': self.capture_gcode_files,
+            'delete_file' : self.delete_file,
             'is_busy': self.is_busy
         })
 
@@ -619,6 +620,20 @@ class T5UID1:
         except Exception as e:
             logging.exception("Unhandled exception in specific_fpname: %s, %s, %s", i, index, str(e)) 
             return None
+
+    def delete_file(self, index):
+            self._scroll_index = index
+            try: # Find the file path in _files based on the index + _scroll_index 
+                file_path = self._files[self._scroll_index] 
+                if file_path is not None: 
+                    # Delete the file
+                    os.remove(file_path)
+                    logging.info(f"Deleted file: {file_path}") 
+                    # Update the _files list 
+                    self._files[self._scroll_index] = None 
+                else: logging.warning("No file to delete at the specified index.") 
+            except Exception as e: 
+                logging.exception("Failed to delete file at index %s: %s", index, str(e))
 
     def check_paused(self):
         """Manage the printer if and while paused"""
