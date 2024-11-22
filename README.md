@@ -103,7 +103,8 @@ See, "Configuring the Data Displayed", below, for what guidelines I can give you
 #### Ultimaker Cura
 At 5.7.0, Cura redacted the two Add-ins I used to recommend using, and replaced them with one new Add-In, "Display Info on LCD."
 Here are the settings that I use, at 5.7.0+:  
-![image](https://github.com/Thinkersbluff/DGUS-Reloaded_for_CR6-Klipper_Component/assets/36551518/c3ad5cd5-01cb-41cc-9964-f1daad074e11)  
+![New Cura PlugIns_1of2](https://github.com/user-attachments/assets/f6f27bf4-17b7-4303-aefe-ce1373df5e83)
+![New Cura PlugIns_2of2](https://github.com/user-attachments/assets/7422acee-a78c-447e-86e4-d79ef7a2c321)
 
 The M118 instruction will log reports into the Klipper Log and display them in the Mainsail Console window.  
 The M73 messages feed the % progress and Time remaining displays on the UI.
