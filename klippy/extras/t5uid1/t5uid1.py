@@ -689,9 +689,15 @@ class T5UID1:
         # iff "eventtime"= "current_time"
         else:
             self._print_duration = eventtime - self._print_start_time
-        # Since the slicer estimated print time and the M73 R values are in minutes, not seconds, 
-        # compute _print_time_remaining in minutes
-        self._print_time_remaining = self._slicer_estimated_print_time - self._print_duration/60
+        # Since the slicer print time estimate ignores pre-heat time, 
+        # do not count-down time remaining until the print purge line begins, based on the Enable PAUSE/STOP logic
+        set svv = printer.save_variables.variables
+        if 'disable_pause_stop' in svv and svv.disable_pause_stop==True:
+            self._print_time_remaining = self._slicer_estimated_print_time
+        else:
+            # Since the slicer estimated print time and the M73 R values are in minutes, not seconds, 
+            # compute _print_time_remaining in minutes
+            self._print_time_remaining = self._slicer_estimated_print_time - self._print_duration/60
         # If_ slicer_estimated_print_time proves too low, revert to using the M73 R factor rather than displaying zero or negative times
         if self._print_time_remaining < 0:
             self._print_time_remaining = self._latest_rvalue
