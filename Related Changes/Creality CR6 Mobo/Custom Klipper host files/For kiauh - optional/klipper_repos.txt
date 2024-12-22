@@ -1,2 +1,0 @@
-https://github.com/Thinkersbluff/dgus-reloaded_klipper,DGUS-ReloadedForCR6
-https://github.com/Klipper3d/klipper,Master

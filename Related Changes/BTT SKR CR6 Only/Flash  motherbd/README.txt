@@ -1,4 +1,4 @@
-The firmware.bin file in this folder was made by using the following instructions, while logged into the Klipper Host:
+The CrealityMB_Klipper.bin file in this folder was made by using the following instructions, while logged into the Klipper Host:
 
 $ cd klipper
 $ make menuconfig
@@ -7,4 +7,6 @@ Enter Q
 Enter Y
 $ make
 
-You can either do that yourself, or just flash the fimrware.bin file to your system.
+
+WARNING: It is NOT possible for you to make your own klipper.bin file that way, using the official Klipper3D.org version of Klipper.
+You must instead flash your printer with the CrealityMB_Klipper.bin file.

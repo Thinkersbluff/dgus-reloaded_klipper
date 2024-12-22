@@ -1,10 +1,7 @@
 # Last Updated: 22 Dec 2024
 #
-# This file contains common pin mappings for the Creality 1.1.0.3 ERA motherboard. 
-# These same pin mappings should also work for the Creality 4.5.3 motherboard.
-# The pin mappings for a Creality 4.5.2 board are available in the Mainsail MACHINE tab
-# NOTE: If you started with a clean installation of Klipper, you can not build and flash your own Klipper.bin file.
-#       You must instead flash the motherboard with the file \Related Changes\Creality CR6 Mobo\Flash  motherbd\CrealityMB_Klipper.bin       
+# This file contains common pin mappings for the Creality 4.5.2 motherboard. 
+# The pin mappings for the BTT SKR CR6 motherboard are available in the Related Changes folder printer.cfg file for that board
 
 # See https://www.klipper3d.org/Config_Reference.html for an explanation of the parameters used in this file.
 
@@ -64,6 +61,8 @@ position_max: 235
 homing_speed: 50
 full_steps_per_rotation: 200
 
+# NOTE: Test printer uses a 0.9 degree motor for the Y axis.
+# If you have the stock 1.8 deg motor, change rotation_distance to 40
 [stepper_y]
 step_pin: PB6
 dir_pin: PB5
@@ -75,7 +74,7 @@ position_min: -2
 position_endstop: -2
 position_max: 235
 homing_speed: 50
-full_steps_per_rotation: 200
+full_steps_per_rotation: 400
 
 [stepper_z]
 step_pin: PB4
@@ -147,11 +146,11 @@ rotation_distance: 35.524
 nozzle_diameter: 0.400
 
 filament_diameter: 1.750
-heater_pin: PB14
+heater_pin: PA1
 
 # If your thermistor is stock (= NTC100 = Marlin Type 1), comment-out the PT1000 and uncomment the 100K setting
 sensor_type: PT1000  
-#sensor_type: Honeywell 100K 135-104LAG-J01
+#sensor_type: EPCOS 100K B57560G104F
 
 sensor_pin: PB1
 
@@ -175,7 +174,7 @@ pressure_advance: 0.0325
 # Bed Heater Settings #
 
 [heater_bed]
-heater_pin: PB13
+heater_pin: PA2
 sensor_type: EPCOS 100K B57560G104F
 sensor_pin: PB0
 min_temp: 0
@@ -193,7 +192,7 @@ pid_Kd: 1000
 #[firmware_retraction]
 
 [fan]
-pin: PB15
+pin: PA0
 kick_start_time: 0.5
 
 [filament_switch_sensor RunoutSensor]
@@ -234,9 +233,9 @@ max_temp: 100
 # NOTE: Reduce these velocity and acceleration values if NOT using InputShaper
 [printer]
 kinematics: cartesian
-max_velocity: 260
-max_accel: 3500
-MINIMUM_CRUISE_RATIO: 0.5
+max_velocity: 500
+max_accel: 3000
+max_accel_to_decel: 1500
 square_corner_velocity: 5
 max_z_velocity: 30
 max_z_accel: 600
