@@ -71,7 +71,7 @@ Once you have installed Klipper and Mainsail, you should be able to browse to yo
    NOTE: To Clone a Repo:  
   i) log in to the Klipper host via SSH (e.g. Using PUtTy)  
  ii) At the Home directory, type:  <code>git clone https://github.com/matthewlloyd/Klipper-Stable-Z-Home.git</code>
-10. In the "Related Changes" folder from the unzipped Source.zip archive, in the "Flash  motherbd" sub-folder of the motherboard sub-folder applicable to your printer,  find the  klipper.bin file and flash that file to your printer (the same way you would flash the Creality or Community Firmware to your motherbaord.)
+10. In the "Related Changes" folder from the unzipped Source.zip archive, in the "Flash  motherbd" sub-folder of the motherboard sub-folder applicable to your printer,  find the  klipper.bin file and flash that file to your printer (the same way you would flash the Creality or Community Firmware to your motherboard.)
 11. Restart your printer.
 12. Restart Klipper.
 
