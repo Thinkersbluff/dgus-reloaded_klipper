@@ -34,13 +34,13 @@ You certainly could, but I don't recommend it.
 When I first created this repo, I did not yet know whether users of any particular motherboard would need to create their own klipper.bin file.  
 Now, we know that the same CrealityMB_Klipper.bin file works on all 3 of the Creality boards, and the firmware.bin file works on the BTT SKR CR6 board, so we do NOT need to install the Desuuu-modified Klipper files.  
 
-I have left those modified files here for reference, but I recommend that users instead follow the guidance in the next two sections.
+I have left those modified files here for reference, because when Klipper3D.org make changes that "break" DGUS-Reloaded, I need to compare these archived files to the latest versions, to plan my updates.  
+
+I recommend that you instead follow the guidance below.
 
 ## Can I Install the Latest Klipper from Klipper3D/master and STILL Use DGUS-Reloaded for CR6?
 Yes, you can!  That is what I do, and I let Moonraker update it, regularly.
 As of December 2024, that still works (as long as you are using v1.3.2 or higher of the Klipper component.)
-
-You need only make these TWO modifications to a standard Klipper v0.12.0 installation, using the files available from this repo:  
 
 ## Guidelines for How to Install DGUS-Reloaded with the Latest Klipper
 Rather than install the full modified Klipper from this repository, with DGUS-Reloaded already installed, you can instead follow these instructions to install the latest Klipper and then add the DGUS-Reloaded functionality.  That way, Moonraker will automatically maintain your Klipper installation.
