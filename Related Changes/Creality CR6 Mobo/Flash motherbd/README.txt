@@ -7,4 +7,6 @@ Enter Q
 Enter Y
 $ make
 
-You can either do that yourself, or just flash the CrealityMB_Klipper.bin file to your system.
+
+WARNING: It is NOT possible for you to make your own klipper.bin file that way, using the official Klipper3D.org version of Klipper.
+You must instead flash your printer with the CrealityMB_Klipper.bin file.
