@@ -727,7 +727,7 @@ class T5UID1:
         else:
             self._print_time_remaining = self._slicer_estimated_print_time - self._print_duration/60 + self._startup_duration/60 + 1
         # If_ slicer_estimated_print_time proves too low, revert to using the M73 R factor rather than displaying zero or negative times
-        if self._print_time_remaining <= 0:
+        if self._print_time_remaining > self._latest_rvalue or self._print_time_remaining <= 0:
             self._print_time_remaining = self._latest_rvalue
             
         # update() the res dictionary based on the keys and current values declared
