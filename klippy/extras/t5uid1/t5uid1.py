@@ -129,7 +129,7 @@ class T5UID1:
 
         self.gcode = self.printer.lookup_object('gcode')
         self.configfile = self.printer.lookup_object('configfile')
-
+        
         self.toolhead = None
         self.heaters = self.printer.load_object(config, 'heaters')
         self.pause_resume = self.printer.load_object(config, 'pause_resume')
@@ -196,6 +196,7 @@ class T5UID1:
         self._print_pause_time = -1
         self._print_end_time = -1
         self._print_time_remaining = 0
+        self._startup_duration = 0
         self._latest_rvalue = 0
         self._slicer_estimated_print_time = 0
         self._boot_page = self._timeout_page = self._shutdown_page = None
@@ -206,6 +207,7 @@ class T5UID1:
 
         self._original_M73 = None
         self._original_M117 = None
+        
 
         global_context = {
             'get_variable': self.get_variable,
@@ -674,6 +676,32 @@ class T5UID1:
             # the above process will also  measure the new print paused time.
             self._print_pause_time = -1
 
+    def get_start_countdown_status(self):
+        """Check whether to start the Splicer-Estimated Print Time Remaining countdown timer""" 
+        variables_file = '/home/pi/klipper/klippy/extras/t5uid1/dgus_reloaded/variables.cfg' 
+        start_countdown_timer = None 
+        try: 
+            with open(variables_file, 'r') as file: 
+                for line in file: 
+                    if 'start_countdown_timer' in line: 
+                        # Strip out unnecessary characters and split the line key, 
+                        key, value = line.strip().split(' = ') 
+                        if key == 'start_countdown_timer': 
+                            start_countdown_timer = value.strip().lower() == 'true' 
+                            break 
+
+        except FileNotFoundError: 
+            print(f"File not found: {variables_file}") 
+        except Exception as e: 
+            print(f"Error reading {variables_file}: {e}") 
+        
+        # If the variable isn't found, handle the case 
+        if start_countdown_timer is None: 
+            print("Variable 'start_countdown_timer' not found.") 
+            start_countdown_timer = False
+
+        return start_countdown_timer
+
     def get_status(self, eventtime):
         """Update the values of the displayed printer status variables"""
         pages = { p: self._pages[p].id for p in self._pages }
@@ -691,9 +719,15 @@ class T5UID1:
             self._print_duration = eventtime - self._print_start_time
         # Since the slicer estimated print time and the M73 R values are in minutes, not seconds, 
         # compute _print_time_remaining in minutes
-        self._print_time_remaining = self._slicer_estimated_print_time - self._print_duration/60
+ 
+        start_counting=self.get_start_countdown_status()
+        if start_counting==False:
+            self._print_time_remaining = self._slicer_estimated_print_time
+            self._startup_duration=self._print_duration
+        else:
+            self._print_time_remaining = self._slicer_estimated_print_time - self._print_duration/60 + self._startup_duration/60 + 1
         # If_ slicer_estimated_print_time proves too low, revert to using the M73 R factor rather than displaying zero or negative times
-        if self._print_time_remaining < 0:
+        if self._print_time_remaining <= 0:
             self._print_time_remaining = self._latest_rvalue
             
         # update() the res dictionary based on the keys and current values declared
