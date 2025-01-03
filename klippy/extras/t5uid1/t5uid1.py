@@ -717,19 +717,26 @@ class T5UID1:
         # iff "eventtime"= "current_time"
         else:
             self._print_duration = eventtime - self._print_start_time
-        # Since the slicer estimated print time and the M73 R values are in minutes, not seconds, 
-        # compute _print_time_remaining in minutes
  
         start_counting=self.get_start_countdown_status()
-        if start_counting==False:
+        if not start_counting:
             self._print_time_remaining = self._slicer_estimated_print_time
-            self._startup_duration=self._print_duration
+            self._startup_duration = self._print_duration
         else:
-            self._print_time_remaining = self._slicer_estimated_print_time - self._print_duration/60 + self._startup_duration/60 + 1
-        # If_ slicer_estimated_print_time proves too low, revert to using the M73 R factor rather than displaying zero or negative times
-        if self._print_time_remaining > self._latest_rvalue or self._print_time_remaining <= 0:
-            self._print_time_remaining = self._latest_rvalue
-            
+        # If_ slicer_estimated_print_time is too low, revert to using the latest M73 R factor 
+        # rather than displaying zero or negative times
+            if self._print_time_remaining > self._latest_rvalue or self._print_time_remaining <= 0:
+                self._print_time_remaining = self._latest_rvalue
+            else:
+            # Since the slicer estimated print time and the M73 R values are in minutes, not seconds, 
+            # compute _print_time_remaining in minutes. 
+            # Add back-in the time spent warming-up before starting the print
+                self._print_time_remaining = (
+                self._slicer_estimated_print_time 
+                - self._print_duration/60 
+                + self._startup_duration/60 
+                + 0.6
+                )
         # update() the res dictionary based on the keys and current values declared
         # within the {} braces here:
         res.update({
@@ -1093,9 +1100,10 @@ class T5UID1:
         self._print_end_time = -1
 
         # If the gcode includes M73 R messages, then capture the first one as the slicer's estimated total print time
-        if self._print_time_remaining > 0:
-            self._slicer_estimated_print_time = self._print_time_remaining
-        else: self._print_time_remaining = 0
+        if self._latest_rvalue > 0:
+            self._slicer_estimated_print_time = self._latest_rvalue
+        else:
+            self._slicer_estimated_print_time = 0
 
         self._is_printing = True
         self.check_paused()
@@ -1121,15 +1129,14 @@ class T5UID1:
         if 'print_end' in self._routines:
             self.start_routine('print_end')
 
-    def cmd_M73(self, gcmd):
-        """Custom M73 function"""
-        # The message format may be M73 P_ R_ or M73 P_ or M73 R_
-        if gcmd.get_int('P', 0):
-            progress = gcmd.get_int('P', 0)
-            self._print_progress = min(100, max(0, progress))
-        if gcmd.get_int('R', 0):
+    def cmd_M73(self, gcmd): 
+        """Custom M73 function""" 
+        # The message format may be M73 P_ R_ or M73 P_ or M73 R_ 
+        if gcmd.get_int('P', 0): 
+            progress = gcmd.get_int('P', 0) 
+            self._print_progress = min(100, max(0, progress)) 
+        if gcmd.get_int('R', 0): 
             self._latest_rvalue = gcmd.get_int('R', 0)
-            self._print_time_remaining = max(0, self._latest_rvalue)
         if self._original_M73 is not None:
             self._original_M73(gcmd)
 
